@@ -39,9 +39,9 @@ function loading(doWhat) {
     $("#loading").hide();
 };
 
-function loadBrief(name, pass) {
+function loadBrief(loadBy, name, id, pass, goWhere) {
   loading('show');
-  Meteor.call('lookUpBrief', name, pass, function(error, result) {
+  Meteor.call('lookUpBrief', loadBy, name, id, pass, function(error, result) {
     loading('hide');
     if(error) {
       //console.log(error);
@@ -55,11 +55,16 @@ function loadBrief(name, pass) {
         //console.log(result);
         if(result == "password required") {
           Session.set('currentBriefName', name);
+          Session.set('currentBriefId', id);
           Session.set('view', 'enterPassword');
         } else {
           console.log(result);
           Session.set('brief', result);
-          Session.set('view', result.defaultView);
+          if(goWhere == "edit") {
+            Session.set('view', 'edit');
+          } else {
+            Session.set('view', result.defaultView);
+          }
         }
       }
     }
@@ -75,6 +80,16 @@ Meteor.subscribe("briefs");
 ///////////SITE-WIDE HANDLEBARS HELPERS//////////
 Handlebars.registerHelper('view', function(which) {
   return Session.get('view') == which;
+});
+
+Handlebars.registerHelper('brief', function() {
+  return Session.get('brief');
+});
+
+Handlebars.registerHelper('myBriefs', function() {
+  if(Meteor.user()) {
+    return Briefs.find();
+  }
 });
 
 
@@ -122,12 +137,20 @@ Template.enterPassword.events = {
   'click #sendPass' : function(e) {
     e.preventDefault();
     var name = Session.get("currentBriefName");
+    var id = Session.get("currentBriefId");
     var pass = $("#briefPass").val();
+    var goWhere = Session.get("goWhere");
     if(!pass || pass == "") {
       notify('error', 'password can\'t be blank');
       return;
     }
-    loadBrief(name, pass);
+    if(name) {
+      loadBrief("name", name, null, pass, goWhere);
+    } else if(id) {
+      loadBrief("id", null, id, pass, goWhere); 
+    } else {
+      notify('error', 'sorry, something went wrong...');
+    }
   },
 };
 
@@ -136,6 +159,7 @@ var myRouter = Backbone.Router.extend({
   routes: {
     "brief/:name": "brief",
     "new": "createNew",
+    "edit/:id" : "edit",
     "": "main",
     "*stuff": "page404"
   },
@@ -146,8 +170,13 @@ var myRouter = Backbone.Router.extend({
       Session.set('view', 'welcome');
     }
   },
+  edit: function(id) {
+    Session.set('goWhere', 'edit');
+    loadBrief("id", null, id, null, "edit");
+  },
   brief: function(name) {
-    loadBrief(name, null);
+    Session.set('goWhere', 'brief');
+    loadBrief("name", name, null, null, "brief");
   },
   createNew: function() {
     Session.set('view', 'createNew');

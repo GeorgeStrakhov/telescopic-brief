@@ -71,6 +71,13 @@ Meteor.methods({
       throw new Meteor.Error('403', 'name not passed');
       return;
     }
+    if(userEmail && userEmail != "") {
+      var re = /[^\s@]+@[^\s@]+\.[^\s@]+/;
+      if(!re.test(userEmail)){
+        throw new Meteor.Error('403', 'email seems to be invalid');
+        return;
+      }
+    }
     name = name.toString();
     if(Briefs.findOne({name: name})) {
       throw new Meteor.Error('403', 'A brief with such name already exists. Please choose a different name');
@@ -102,14 +109,38 @@ Meteor.methods({
       defaultView: "telescopic",
       content: {}
     });
+    if(!this.userId && !(userEmail =="")) {//not a user - send an email with links to view and edit
+      Email.send({
+        from : "telescopicbrief@gmail.com",
+        to : userEmail,
+        subject: "your new telescopic Brief",
+        html: '<!DOCTYPE HTML><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><body><p>Thanks for checking out <a href="'+Meteor.absoluteUrl()+'">Telescopic Brief</a></p><p>You can view your new brief <a href="'+Meteor.absoluteUrl()+'#/brief/'+name+'"here</a>.</p><p>You can also edit your new brief using <a href="'+Meteor.absoluteUrl()+'#/edit/'+newBriefId+'">this secret link</a>. But don\'t tell it to anybody else, unless you want them to be able to edit this brief as well.</p><p>Next time around make sure you sign in with Facebook, so that you can later view all your briefs in one place, edit them and more.</p><p>Have fun!</p><p>Best,</p><p><a href="'+Meteor.absoluteUrl()+'">Telescopic Brief</a></p></body></html>',
+      });
+    }
     return newBriefId;
   },
-  'lookUpBrief' : function(name, password) {
-    if(!name || !Briefs.findOne({name: name})) {
-      throw new Meteor.Error('404', 'such brief doesn\'t exist');
-      return;
+  'lookUpBrief' : function(loadBy, name, id, password) {
+    if(loadBy == "name") {
+      if(!name || !Briefs.findOne({name: name})) {
+        throw new Meteor.Error('404', 'such brief doesn\'t exist');
+        return;
+      }
+      var mine = Briefs.findOne({name: name, owners: this.userId});
+      if(mine) {
+        return mine;
+      }
+      var b = Briefs.findOne({name: name});
+    } else {
+      if(!id || !Briefs.findOne(id)) {
+        throw new Meteor.Error('404, such brief doesn\'t exist');
+        return;
+      }
+      var mine = Briefs.findOne({_id: id, owners: this.userId});
+      if(mine) {
+        return mine;
+      }
+      var b = Briefs.findOne(id);
     }
-    var b = Briefs.findOne({name: name});
     if(!b.passwordProtected) {
       return b;
     } else if(password && b.password == password) {

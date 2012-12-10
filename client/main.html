@@ -25,8 +25,14 @@
       {{#if view "createNew"}}
         {{>createNew}}
       {{/if}}
+      {{#if view "edit"}}
+        {{>edit}}
+      {{/if}}
       {{#if view "enterPassword"}}
         {{>enterPassword}}
+      {{/if}}
+      {{#if view "telescopic"}}
+        {{>briefTelescopic}}
       {{/if}}
       {{#if view "myApp"}}
         {{>myApp}}
@@ -38,9 +44,21 @@
 </template>
 
 <template name="myApp">
-  <div id="innerContent">
-     blah blah
+  <div class="row">
+    <div class="span12">
+      <h2>my briefs:</h2>
+      <ul>
+        {{#each myBriefs}}
+          {{>singleBriefLi}}
+        {{/each}}
+        <li><a href="#/new">create new</a></li>
+      </ul>
+    </div>
   </div>
+</template>
+
+<template name="singleBriefLi">
+  <li><a href="#/brief/{{this.name}}">{{this.name}}</a></li>
 </template>
 
 <template name="navbarUser">
@@ -86,6 +104,18 @@
       </form>    
     </div>
   </div>
+</template>
+
+<template name="edit">
+  <div class="row">
+    <div class="span12">
+      <h2>Edit "{{brief.name}}"</h2>
+    </div>
+  </div>
+</template>
+
+<template name="briefTelescopic">
+  <h2>{{brief.name}}</h2>
 </template>
 
 <template name="welcome">

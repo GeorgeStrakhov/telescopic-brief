@@ -59,7 +59,7 @@ Meteor.startup(function() {
 
 ////////PUBLISH//////////
 Meteor.publish("briefs", function() {
-  return Briefs.find({owners:this.userId});//we only publish user's own briefs. If the anonymous or another user accesses a brief by id - we pass this exact brief back via a call result
+  return Briefs.find({$or:[{owners:this.userId}, {readers: this.userId}]});//we only publish user's own briefs. If the anonymous or another user accesses a brief by id - we pass this exact brief back via a call result
 });
 
 
@@ -101,6 +101,7 @@ Meteor.methods({
     newBriefId = Briefs.insert({
       lastModified: d.getTime(),
       owners: (this.userId) ? [this.userId] : [],
+      readers: (this.userId) ? [this.userId] : [],
       passwordProtected: (password) ? true : false,
       password: (password) ? password : undefined,
       name: name,
@@ -126,9 +127,11 @@ Meteor.methods({
         return;
       }
       var mine = Briefs.findOne({name: name, owners: this.userId});
-      if(mine) {
+      if(mine)
         return mine;
-      }
+      var mine = Briefs.findOne({name: name, readers: this.userId});
+      if(mine)
+        return mine;
       var b = Briefs.findOne({name: name});
     } else {
       if(!id || !Briefs.findOne(id)) {
@@ -136,9 +139,11 @@ Meteor.methods({
         return;
       }
       var mine = Briefs.findOne({_id: id, owners: this.userId});
-      if(mine) {
+      if(mine)
         return mine;
-      }
+      var mine = Briefs.findOne({_id: id, readers: this.userId});
+      if(mine)
+        return mine;
       var b = Briefs.findOne(id);
     }
     if(!b.passwordProtected) {

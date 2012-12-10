@@ -58,10 +58,67 @@ Meteor.startup(function() {
 });
 
 ////////PUBLISH//////////
+Meteor.publish("briefs", function() {
+  return Briefs.find({owners:this.userId});//we only publish user's own briefs. If the anonymous or another user accesses a brief by id - we pass this exact brief back via a call result
+});
 
 
 ///////METHODS///////////
-/*
+
 Meteor.methods({
+  'createNewBrief' : function(name, isProtected, password, userEmail, forkedFrom) {
+    if(!name) {
+      throw new Meteor.Error('403', 'name not passed');
+      return;
+    }
+    name = name.toString();
+    if(Briefs.findOne({name: name})) {
+      throw new Meteor.Error('403', 'A brief with such name already exists. Please choose a different name');
+      return;
+    }
+    if(forkedFrom) {
+      if(!Briefs.findOne(forkedFrom)) {
+        throw new Meteor.Error('403', 'Can\'t fork from a brief that doesn\'t exist');
+        return;
+      }
+    }
+    if(!isProtected) {
+      password = undefined;
+    }
+    if(this.userId) {
+      var createdBy = Meteor.users.findOne(this.userId).displayName;
+    } else {
+      var createdBy = userEmail;
+    }
+    var d = new Date();
+    newBriefId = Briefs.insert({
+      lastModified: d.getTime(),
+      owners: (this.userId) ? [this.userId] : [],
+      passwordProtected: (password) ? true : false,
+      password: (password) ? password : undefined,
+      name: name,
+      createdBy: createdBy,
+      forkedFrom: (forkedFrom) ? forkedFrom : undefined,
+      defaultView: "telescopic",
+      content: {}
+    });
+    return newBriefId;
+  },
+  'lookUpBrief' : function(name, password) {
+    if(!name || !Briefs.findOne({name: name})) {
+      throw new Meteor.Error('404', 'such brief doesn\'t exist');
+      return;
+    }
+    var b = Briefs.findOne({name: name});
+    if(!b.passwordProtected) {
+      return b;
+    } else if(password && b.password == password) {
+      return b;
+    } else if (password && !(b.password == password)) {
+      throw new Meteor.Error('403', 'wrong password, try again');
+      return;
+    } else {
+      return "password required";
+    }
+  }
 });
-*/

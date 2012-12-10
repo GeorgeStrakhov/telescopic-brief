@@ -39,8 +39,36 @@ function loading(doWhat) {
     $("#loading").hide();
 };
 
+function loadBrief(name, pass) {
+  loading('show');
+  Meteor.call('lookUpBrief', name, pass, function(error, result) {
+    loading('hide');
+    if(error) {
+      //console.log(error);
+      if(error.error == "404") {
+        Session.set('view', '404');      
+      } else {
+        notify('error', error.reason);
+      }
+    } else {
+      if(result) {
+        //console.log(result);
+        if(result == "password required") {
+          Session.set('currentBriefName', name);
+          Session.set('view', 'enterPassword');
+        } else {
+          console.log(result);
+          Session.set('brief', result);
+          Session.set('view', result.defaultView);
+        }
+      }
+    }
+  });
+};
+
 
 ///////SUBSCRIBE///////////
+Meteor.subscribe("briefs");
 
 ////////////REACTIVE AUTOSUBSCRIBE HELPERS//////////
 
@@ -73,17 +101,40 @@ Template.createNew.events = {
       return;
     }
     loading('show');
-    Meteor.call('createNewBrief', $("#briefName").val(), $("#passwordProtect").is(':checked'), $("#briefPassword").val(), function(error,result) {notifyCallRes(error,null); loading('hide');});
+    Meteor.call('createNewBrief', $("#briefName").val(), $("#passwordProtect").is(':checked'), $("#briefPassword").val(), $("#userEmail").val(), false, function(error,result) {
+      loading('hide');
+      if(error) {
+        notifyCallRes(error,null);
+        return;
+      } else {
+        if(result) { //result is the _id of the new brief. edit links are always "secret" through the use of _id
+          Router.navigate("#/edit/"+result, true);
+        }
+      }
+    });
   },
   'change #passwordProtect' : function() {
     $("#passFieldDiv").toggle('fast');
   },
 };
 
+Template.enterPassword.events = {
+  'click #sendPass' : function(e) {
+    e.preventDefault();
+    var name = Session.get("currentBriefName");
+    var pass = $("#briefPass").val();
+    if(!pass || pass == "") {
+      notify('error', 'password can\'t be blank');
+      return;
+    }
+    loadBrief(name, pass);
+  },
+};
+
 //////////ROUTER///////////
 var myRouter = Backbone.Router.extend({
   routes: {
-    "brief/:id": "brief",
+    "brief/:name": "brief",
     "new": "createNew",
     "": "main",
     "*stuff": "page404"
@@ -95,8 +146,8 @@ var myRouter = Backbone.Router.extend({
       Session.set('view', 'welcome');
     }
   },
-  brief: function(id) {
-    console.log(id);  
+  brief: function(name) {
+    loadBrief(name, null);
   },
   createNew: function() {
     Session.set('view', 'createNew');

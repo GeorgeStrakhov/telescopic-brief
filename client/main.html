@@ -1,0 +1,118 @@
+<head>
+  <title>Telescopic Brief - meaningful brief for everyone.</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+  {{> app}}
+</body>
+
+<template name="app">
+  {{>loading}}
+  {{#if currentUser}}
+    {{>navbarUser}}
+  {{else}}
+    {{>navbarNonUser}}
+  {{/if}}
+  <div id="wrap">
+    <div class="container">
+      {{#if view "404"}}
+        {{>page404}}
+      {{/if}}
+      {{#if view "welcome"}}
+        {{>welcome}}
+      {{/if}}
+      {{#if view "createNew"}}
+        {{>createNew}}
+      {{/if}}
+      {{#if view "myApp"}}
+        {{>myApp}}
+      {{/if}}
+    </div>
+    <div id="push"></div>
+  </div>
+  {{>footer}}
+</template>
+
+<template name="myApp">
+  <div id="innerContent">
+     blah blah
+  </div>
+</template>
+
+<template name="navbarUser">
+  {{#if view "create"}}
+    create!
+  {{/if}}
+</template>
+
+<template name="navbarNonUser">
+  {{#if view "create"}}
+    nonuser create!
+  {{/if}}
+</template>
+
+<template name="createNew">
+  <div class="row">
+    <div class="span12 wholePageFormWrap">
+      <form class="form-signin">
+        <h2 class="form-signin-heading">New Telescopic Brief</h2>
+        <input type="text" class="input-block-level" id="briefName" placeholder="brief name (should be unique)" />
+        <label class="checkbox">
+          <input type="checkbox" id="passwordProtect"> protect my brief with a password
+        </label>
+        <div class="hide" id="passFieldDiv">
+          <input type="text" id="briefPassword" class="input-block-level" placeholder="your password here" />
+        </div>
+        <button class="btn btn-large btn-primary" type="submit" id="createNewBtn">create</button>
+      </form>    
+    </div>
+  </div>
+</template>
+
+<template name="welcome">
+  <div class="row">
+    <div class="span12">
+      <h1>Telescopic Brief</h1>
+      <h3>meaningful brief for everyone</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <p>In the world of marketing, great briefs are as important for great projects, as the people cracking it.</p>
+      <p>But "great brief" means different things for different people. For example, some people (especially creatives) like short single-minded punchy briefs. Some prefer detailed briefs that explain the business background and why we need to do what we need to do. But ultimately every good brief is about <strong>attitude and behavior change</strong> that needs to be achieved in order to address a specific <strong>business objective</strong>.
+    </div>
+    <div class="span6">
+      <iframe src="http://player.vimeo.com/video/54141579?title=0&amp;byline=0&amp;portrait=0&amp;color=ffffff" width="500" height="200" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="span6">
+      <p><a href="#" class="btn btn-block btn-large btn-primary" id="signInWithFB">sing in with Facebook</a></p>
+      <p>(We will never post anything, promise!)</p>
+    </div>
+    <div class="span6">
+      <a href="#/new" class="btn btn-block btn-large" id="createNew">write a brief</a></p>
+      <p>(Without signing in you won't be able to edit it later on!)</p>
+    </div>
+  </div>
+</template>
+
+<template name="loading">
+  <div id="loading" class="hide"></div>
+</template>
+
+<template name="footer">
+  <div id="footer">
+    <p class="muted credit centered">
+      Inspired by <a href="http://telescopictext.com/" target="_blank" >Joe Davis</a>
+      | Created by <a href="http://fnlly.com" target="_blank">George Strakhov</a>
+      </p>
+  </div>
+</template>
+
+<template name="page404">
+  <h1>404</h1>
+  <h3>page not found :(</h3>
+</template>

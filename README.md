@@ -6,6 +6,7 @@
 * _id: Meteor.uuid
 * lastModified: timestamp
 * owners: [] array of userIds
+* readers: [] array of userId (for not putting in password again if you are signed in
 * passwordProtected: true/false
 * password: "string" //not secure for now
 * name: "unique name"
@@ -38,3 +39,6 @@
 * targetBehaviorConditions: [] //array of conditions that may lead to target behavior
 * KPIs: [] //array of KPIs, for each .name, .current, .target
 * additionalInfo: [] //array of strings with additional info
+
+##TODO
+* google analytics

@@ -1,5 +1,5 @@
 ////////SETUP////////
-var superAdminEmail = "george.strakhov@gmail.com"; //FB email of the superadmin; only the user with this email will be able to change userRoles for other users.
+var superAdminEmail = "george.strakhov@gmail.com"; //FB email of the superadmin; 
 
 var localhostFacebook = {
   appId: "174600052663913",
@@ -133,18 +133,13 @@ Meteor.methods({
       if(mine)
         return mine;
       var b = Briefs.findOne({name: name});
-    } else {
+    } else if(loadBy =="id") { //loading by ID is secret, so we just give this brief.
       if(!id || !Briefs.findOne(id)) {
-        throw new Meteor.Error('404, such brief doesn\'t exist');
+        throw new Meteor.Error('404', 'such brief doesn\'t exist');
         return;
       }
-      var mine = Briefs.findOne({_id: id, owners: this.userId});
-      if(mine)
-        return mine;
-      var mine = Briefs.findOne({_id: id, readers: this.userId});
-      if(mine)
-        return mine;
       var b = Briefs.findOne(id);
+      return b;
     }
     if(!b.passwordProtected) {
       return b;

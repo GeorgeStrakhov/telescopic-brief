@@ -160,6 +160,7 @@ var myRouter = Backbone.Router.extend({
     "brief/:name": "brief",
     "new": "createNew",
     "edit/:id" : "edit",
+    "pdf" : "pdf",
     "": "main",
     "*stuff": "page404"
   },
@@ -177,6 +178,9 @@ var myRouter = Backbone.Router.extend({
   brief: function(name) {
     Session.set('goWhere', 'brief');
     loadBrief("name", name, null, null, "brief");
+  },
+  pdf: function() {
+    Session.set('view', 'pdf');
   },
   createNew: function() {
     Session.set('view', 'createNew');

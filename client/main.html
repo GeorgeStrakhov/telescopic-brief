@@ -22,6 +22,9 @@
       {{#if view "welcome"}}
         {{>welcome}}
       {{/if}}
+      {{#if view "pdf"}}
+        {{>pdf}}
+      {{/if}}
       {{#if view "createNew"}}
         {{>createNew}}
       {{/if}}
@@ -51,7 +54,9 @@
         {{#each myBriefs}}
           {{>singleBriefLi}}
         {{/each}}
-        <li><a href="#/new">create new</a></li>
+        <hr />
+        <li><a href="#/new">create new telescopic brief</a></li>
+        <li><a href="#/pdf">download fillable .pdf form instead</a></li>
       </ul>
     </div>
   </div>
@@ -118,6 +123,21 @@
   <h2>{{brief.name}}</h2>
 </template>
 
+<template name="pdf">
+  <div class="row centered">
+    <h2>Telescopic Brief .pdf edition</h2>
+  </div>
+  <div class="row">
+    <div class="span6">
+      <p>Download it from <a href="/files/TelescopicBrief.pdf">here</a>.</p>
+      <p>If you want to modify it for your needs - download the source <a href="http://www.libreoffice.org" target="_blank">Libre Office</a> document from <a href="/files/TelescopicBrief.odt">here</a>.</p>
+    </div>
+    <div class="span6">
+      video how to fold it will go here
+    </div>
+  </div>
+</template>
+
 <template name="welcome">
   <div class="row">
     <div class="span12">
@@ -143,6 +163,12 @@
     <div class="span6">
       <a href="#/new" class="btn btn-block btn-large" id="createNew">write a brief right now</a></p>
       <p class="centered muted">(Without signing in you won't be able to manage your briefs later on)</p>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="span12 centered">
+      <p>Or you can <a href="#/pdf">download a fillable .pdf form</a> instead.</p>
     </div>
   </div>
 </template>

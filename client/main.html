@@ -113,8 +113,98 @@
 
 <template name="edit">
   <div class="row">
+    <div class="span12 centered">
+      <h2>{{brief.name}}</h2>
+    </div>
+  </div>
+  <div class="row">
     <div class="span12">
-      <h2>Edit "{{brief.name}}"</h2>
+      <div class="accordion" id="stepsaccordion">
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step1body" id="step1">
+              Step #1: Key Challenge
+            </a>
+          </div>
+          <div id="step1body" class="accordion-body collapse {{#if editStep '1'}}in{{/if}}">
+            <div class="accordion-inner">
+              step1 stuff
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step2body" id="step2">
+              Step #2: Background
+            </a>
+          </div>
+          <div id="step2body" class="accordion-body collapse {{#if editStep '2'}}in{{/if}}">
+            <div class="accordion-inner">
+              step2
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step3body" id="step3">
+              Step #3: Target Group
+            </a>
+          </div>
+          <div id="step3body" class="accordion-body collapse {{#if editStep '3'}}in{{/if}}">
+            <div class="accordion-inner">
+              step3 stuff
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step4body" id="step4">
+              Step #4: Behavior Change
+            </a>
+          </div>
+          <div id="step4body" class="accordion-body collapse {{#if editStep '4'}}in{{/if}}">
+            <div class="accordion-inner">
+              step4 stuff
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step5body" id="step5">
+              Step #5: Success Definition
+            </a>
+          </div>
+          <div id="step5body" class="accordion-body collapse {{#if editStep '5'}}in{{/if}}">
+            <div class="accordion-inner">
+              step5 stuff
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step6body" id="step6">
+              Step #6: Additional Information
+            </a>
+          </div>
+          <div id="step6body" class="accordion-body collapse {{#if editStep '6'}}in{{/if}}">
+            <div class="accordion-inner">
+              step 6:other things you need to know
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="span12">
+      <ul class="pager">
+        <li class="previous">
+          <a href="#">&larr; Previous</a>
+        </li>
+        <li class="next">
+          <a href="#">Next &rarr;</a>
+        </li>
+      </ul>
     </div>
   </div>
 </template>

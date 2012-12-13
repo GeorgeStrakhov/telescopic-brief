@@ -41,34 +41,35 @@ function loading(doWhat) {
 
 function loadBrief(loadBy, name, id, pass, goWhere) {
   loading('show');
-  Meteor.call('lookUpBrief', loadBy, name, id, pass, function(error, result) {
-    loading('hide');
-    if(error) {
-      //console.log(error);
-      if(error.error == "404") {
-        Session.set('view', '404');      
-      } else {
-        notify('error', error.reason);
-      }
-    } else {
-      if(result) {
-        //console.log(result);
-        if(result == "password required") {
-          Session.set('currentBriefName', name);
-          Session.set('currentBriefId', id);
-          Session.set('view', 'enterPassword');
+  Meteor.setTimeout(function(){
+    Meteor.call('lookUpBrief', loadBy, name, id, pass, function(error, result) {
+      loading('hide');
+      if(error) {
+        //console.log(error);
+        if(error.error == "404") {
+          Session.set('view', '404');      
         } else {
-          console.log(result);
-          Session.set('brief', result);
-          if(goWhere == "edit") {
-            Session.set('view', 'edit');
+          notify('error', error.reason);
+        }
+      } else {
+        if(result) {
+          //console.log(result);
+          if(result == "password required") {
+            Session.set('currentBriefName', name);
+            Session.set('currentBriefId', id);
+            Session.set('view', 'enterPassword');
           } else {
-            Session.set('view', result.defaultView);
+            console.log(result);
+            Session.set('brief', result);
+            if(goWhere == "edit") {
+              Session.set('view', 'edit');
+            } else {
+              Session.set('view', result.defaultView);
+            }
           }
         }
       }
-    }
-  });
+    })}, 1000); //can we fix this to be better than a fixed number of milliseconds? otherwise error is shown first.
 };
 
 
@@ -90,6 +91,10 @@ Handlebars.registerHelper('myBriefs', function() {
   if(Meteor.user()) {
     return Briefs.find();
   }
+});
+
+Handlebars.registerHelper('editStep', function(which) {
+  return Session.get('editStep') == which;
 });
 
 
@@ -116,10 +121,10 @@ Template.createNew.events = {
       return;
     }
     loading('show');
-    Meteor.call('createNewBrief', $("#briefName").val(), $("#passwordProtect").is(':checked'), $("#briefPassword").val(), $("#userEmail").val(), false, function(error,result) {
-      loading('hide');
+    Meteor.call('createNewBrief', $("#briefName").val(), $("#passwordProtect").is(':checked'), $("#briefPassword").val(), $("#userEmail").val(), false, function(error,result) {    
       if(error) {
         notifyCallRes(error,null);
+        loading('hide');
         return;
       } else {
         if(result) { //result is the _id of the new brief. edit links are always "secret" through the use of _id
@@ -154,12 +159,21 @@ Template.enterPassword.events = {
   },
 };
 
+Template.edit.events = {
+  'click .accordion-toggle': function(e) {
+    //save changes
+    //change url part
+    var which = e.target.id;
+    history.pushState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
+  },
+};
+
 //////////ROUTER///////////
 var myRouter = Backbone.Router.extend({
   routes: {
     "brief/:name": "brief",
     "new": "createNew",
-    "edit/:id" : "edit",
+    "edit/:id/step:step" : "edit",
     "pdf" : "pdf",
     "": "main",
     "*stuff": "page404"
@@ -171,7 +185,12 @@ var myRouter = Backbone.Router.extend({
       Session.set('view', 'welcome');
     }
   },
-  edit: function(id) {
+  edit: function(id,step) {
+    if(step && step>0 && step<8){
+      Session.set('editStep', step);
+    } else {
+      Session.set('editStep', "1");
+    }
     Session.set('goWhere', 'edit');
     loadBrief("id", null, id, null, "edit");
   },

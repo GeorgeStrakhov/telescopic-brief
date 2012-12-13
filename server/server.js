@@ -127,12 +127,16 @@ Meteor.methods({
         return;
       }
       var mine = Briefs.findOne({name: name, owners: this.userId});
-      if(mine)
+      if(mine) {
         return mine;
+      }
       var mine = Briefs.findOne({name: name, readers: this.userId});
-      if(mine)
+      if(mine) {
+        mine._id = undefined; //NB! don't give away brief _id to readers
         return mine;
+      }
       var b = Briefs.findOne({name: name});
+      b._id = undefined; // NB! don't give away biref _id to strangers
     } else if(loadBy =="id") { //loading by ID is secret, so we just give this brief.
       if(!id || !Briefs.findOne(id)) {
         throw new Meteor.Error('404', 'such brief doesn\'t exist');

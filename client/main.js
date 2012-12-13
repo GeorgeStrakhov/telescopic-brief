@@ -72,6 +72,9 @@ function loadBrief(loadBy, name, id, pass, goWhere) {
     })}, 1000); //can we fix this to be better than a fixed number of milliseconds? otherwise error is shown first.
 };
 
+function saveEditChanges() {
+  console.log('saving changes...');
+};
 
 ///////SUBSCRIBE///////////
 Meteor.subscribe("briefs");
@@ -90,6 +93,14 @@ Handlebars.registerHelper('brief', function() {
 Handlebars.registerHelper('myBriefs', function() {
   if(Meteor.user()) {
     return Briefs.find();
+  }
+});
+
+Handlebars.registerHelper('isMyBrief', function() {
+  if(!Meteor.user()) {
+    return false;
+  } else {
+    return!($.inArray(Meteor.userId(), Session.get('brief').owners) == -1); //return true if current user is one of the owners
   }
 });
 
@@ -162,10 +173,16 @@ Template.enterPassword.events = {
 Template.edit.events = {
   'click .accordion-toggle': function(e) {
     //save changes
-    //change url part
+    saveEditChanges();
+    //change url part & session variable 'editStep'
     var which = e.target.id;
+    Session.set('editStep', which.charAt(4));
     history.pushState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
   },
+  'click #finishEditing' : function() {
+    saveEditChanges();
+    Router.navigate("#/brief/"+Session.get('brief').name, false);
+  }
 };
 
 //////////ROUTER///////////
@@ -174,6 +191,7 @@ var myRouter = Backbone.Router.extend({
     "brief/:name": "brief",
     "new": "createNew",
     "edit/:id/step:step" : "edit",
+    "edit/:id" : "edit",
     "pdf" : "pdf",
     "": "main",
     "*stuff": "page404"

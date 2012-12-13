@@ -195,22 +195,30 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <!--<div class="row">
     <div class="span12">
       <ul class="pager">
         <li class="previous">
-          <a href="#">&larr; Previous</a>
+          <a href="#" id="previousBtn">&larr; Previous</a>
         </li>
         <li class="next">
-          <a href="#">Next &rarr;</a>
+          <a href="#" id="nextBtn">Next &rarr;</a>
         </li>
       </ul>
+    </div>
+  </div>-->
+  <div class="row">
+    <div class="span12 centered">
+      <button class="btn btn-large btn-primary" id="finishEditing">finish editing</button>
     </div>
   </div>
 </template>
 
 <template name="briefTelescopic">
   <h2>{{brief.name}}</h2>
+  {{#if isMyBrief}}
+    <p><a href="#/edit/{{brief._id}}/step1">edit this brief</a></p>
+  {{/if}}
 </template>
 
 <template name="pdf">

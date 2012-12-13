@@ -51,9 +51,11 @@
     <div class="span12">
       <h2>my briefs:</h2>
       <ul>
-        {{#each myBriefs}}
-          {{>singleBriefLi}}
-        {{/each}}
+        {{#if myBriefs}}
+          {{#each myBriefs}}
+            {{>singleBriefLi}}
+          {{/each}}
+        {{/if}}
         <hr />
         <li><a href="#/new">create new telescopic brief</a></li>
         <li><a href="#/pdf">download fillable .pdf form instead</a></li>
@@ -63,7 +65,15 @@
 </template>
 
 <template name="singleBriefLi">
-  <li><a href="#/brief/{{this.name}}">{{this.name}}</a></li>
+  <li>
+    <a href="#/brief/{{this.name}}">
+      {{#if b.briefDisplayName}}
+        {{b.briefDisplayName}}
+      {{else}}
+        {{this.name}}
+      {{/if}}
+    </a>
+  </li>
 </template>
 
 <template name="navbarUser">
@@ -114,7 +124,7 @@
 <template name="edit">
   <div class="row">
     <div class="span12 centered">
-      <h2>{{brief.name}}</h2>
+      <h2><span class="editable" id="briefDisplayName">{{content.briefDisplayName}}</span></h2>
     </div>
   </div>
   <div class="row">
@@ -128,7 +138,7 @@
           </div>
           <div id="step1body" class="accordion-body collapse {{#if editStep '1'}}in{{/if}}">
             <div class="accordion-inner">
-              step1 stuff
+              <h4>We want <span class="editable" id="targetGroup">{{content.targetGroup}}</span> to <span class="editable" id="targetBehavior">{{content.targetBehavior}}</span>.</h4>
             </div>
           </div>
         </div>
@@ -195,27 +205,15 @@
       </div>
     </div>
   </div>
-  <!--<div class="row">
-    <div class="span12">
-      <ul class="pager">
-        <li class="previous">
-          <a href="#" id="previousBtn">&larr; Previous</a>
-        </li>
-        <li class="next">
-          <a href="#" id="nextBtn">Next &rarr;</a>
-        </li>
-      </ul>
-    </div>
-  </div>-->
   <div class="row">
     <div class="span12 centered">
-      <button class="btn btn-large btn-primary" id="finishEditing">finish editing</button>
+      <button class="btn btn-large btn-primary btn-block" id="finishEditing">finish editing</button>
     </div>
   </div>
 </template>
 
 <template name="briefTelescopic">
-  <h2>{{brief.name}}</h2>
+  <h2>{{content.briefDisplayName}}</h2>
   {{#if isMyBrief}}
     <p><a href="#/edit/{{brief._id}}/step1">edit this brief</a></p>
   {{/if}}

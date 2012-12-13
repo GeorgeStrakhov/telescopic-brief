@@ -17,6 +17,7 @@
 * content: {object with properties}
 
 ###Brief.content. :
+* briefDisplayName
 * brandName
 * brandDefinition
 * productName

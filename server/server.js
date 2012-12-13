@@ -108,7 +108,7 @@ Meteor.methods({
       createdBy: createdBy,
       forkedFrom: (forkedFrom) ? forkedFrom : undefined,
       defaultView: "telescopic",
-      content: {}
+      content: {briefDisplayName: name}
     });
     if(!this.userId && !(userEmail =="")) {//not a user - send an email with links to view and edit
       Email.send({
@@ -155,5 +155,22 @@ Meteor.methods({
     } else {
       return "password required";
     }
-  }
+  },
+  'updateBrief' : function(briefId, key, value) {
+    //console.log(briefId+","+key+","+value);
+    if(!briefId || !key || !value) {
+      throw new Meteor.Error('403', 'brief id, key or value not passed');
+      return;
+    }
+    var b = Briefs.findOne(briefId);
+    if(!b) {
+      throw new Meteor.Error('404', 'the brief you\'re trying to update doesn\'t exist any more');
+      return;
+    }
+    b.content[key] = value;
+    var d = new Date();
+    b.lastEdited = d.getTime();
+    Briefs.update(b._id, b);
+    return Briefs.findOne(b._id);
+  },
 });

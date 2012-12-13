@@ -59,7 +59,7 @@ function loadBrief(loadBy, name, id, pass, goWhere) {
             Session.set('currentBriefId', id);
             Session.set('view', 'enterPassword');
           } else {
-            console.log(result);
+            //console.log(result);
             Session.set('brief', result);
             if(goWhere == "edit") {
               Session.set('view', 'edit');
@@ -72,8 +72,23 @@ function loadBrief(loadBy, name, id, pass, goWhere) {
     })}, 1000); //can we fix this to be better than a fixed number of milliseconds? otherwise error is shown first.
 };
 
-function saveEditChanges() {
-  console.log('saving changes...');
+function saveEditChanges(key, value) { //key - fieldName, value - new value
+  //console.log(key+':'+value);
+  var b = Session.get('brief');
+  //first we need to first update the local (Session.get('brief'))
+  b.content[key] = value;
+  Session.set('brief', b);  
+  //second we need to send the update to the server via Meteor.call('updateBrief', key, value); - optionally we can notify the user that all the changes have been saved (callback from Meteor.Call)
+  
+  //FIX show little loading spinner
+
+  Meteor.call('updateBrief', b._id, key.toString(), value, function(error, result) {
+    if(error)
+      notify('error', error.reason);
+    if(result) {
+      //FIX here we need to hide the little loading spinner
+    }
+  });
 };
 
 ///////SUBSCRIBE///////////
@@ -90,9 +105,39 @@ Handlebars.registerHelper('brief', function() {
   return Session.get('brief');
 });
 
+Handlebars.registerHelper('content', function() {
+  var b = Session.get('brief').content;
+  var content = {
+    targetGroup : (b.targetGroup) ? b.targetGroup : "{target group}",
+    targetBehavior : (b.targetBehavior) ? b.targetBehavior : "{target behavior}",
+    briefDisplayName : (b.briefDisplayName) ? b.briefDisplayName : Session.get('brief').name,
+    brandName : (b.brandName) ? b.brandName : "{brand name}",
+    brandDefinition : (b.brandDefinition) ? b.brandDefinition : "{brand definition}",
+    productName : (b.productName) ? b.productName : "{product name}",
+    productDefinition : (b.productDefinition) ? b.productDefinition : "{product definition}",
+    currentSituation : (b.currentSituation) ? b.currentSituation : "{current situation}",
+    businessGoal : (b.businessGoal) ? b.businessGoal : "{business goal}",
+    businessObjectives : (b.businessObjectives) ? b.businessObjectives : [],
+    targetSex : (b.targetSex) ? b.targetSex : "{male or female}",
+    targetMinAge : (b.targetMinAge) ? b.targetMinAge : "0",
+    targetMaxAge : (b.targetMaxAge) ? b.targetMaxAge : "99",
+    targetLifeConditions : (b.targetLifeConditions) ? b.targetLifeConditions : [],
+    targetCurrentLife : (b.targetCurrentLife) ? b.targetCurrentLife : "{current life}",
+    targetChallenges : (b.targetChallenges) ? b.targetChallenges : [],
+    targetDreams : (b.targetDreams) ? b.targetDreams : [],
+    currentAttitude : (b.currentAttitude) ? b.currentAttitude : "{current attitude}",
+    currentBehavior : (b.currentBehavior) ? b.currentBehavior : "{current behavior}",
+    targetAttitude : (b.targetAttitude) ? b.targetAttitude : "{target attitude}",
+    targetBehaviorConditions : (b.targetBehaviorConditions) ? b.targetBehaviorConditions : [],
+    KPIs : (b.KPIs) ? b.KPIs : [],
+    additionalInfo : (b.additionalInfo) ? b.additionalInfo : [],    
+  };
+  return content;
+});
+
 Handlebars.registerHelper('myBriefs', function() {
   if(Meteor.user()) {
-    return Briefs.find();
+    return Briefs.find({},{sort: {lastEdited: -1}});
   }
 });
 
@@ -170,17 +215,32 @@ Template.enterPassword.events = {
   },
 };
 
+Template.singleBriefLi.b = function() {
+  return this.content;
+};
+
+Template.edit.rendered = function() {
+  //console.log('rendered!');
+  $('.editable').editable(function(value, settings){
+    saveEditChanges(this.id, value);
+    //console.log(value);
+    //console.log(settings);
+    return value;
+  }, {//options
+    style: 'inherit',
+    event: 'click',
+    onblur: 'submit',
+    tooltip: 'click to edit...'
+  });
+}
+
 Template.edit.events = {
   'click .accordion-toggle': function(e) {
-    //save changes
-    saveEditChanges();
-    //change url part & session variable 'editStep'
     var which = e.target.id;
     Session.set('editStep', which.charAt(4));
     history.pushState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
   },
   'click #finishEditing' : function() {
-    saveEditChanges();
     Router.navigate("#/brief/"+Session.get('brief').name, false);
   }
 };

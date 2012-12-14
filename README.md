@@ -40,8 +40,7 @@
 * targetBehaviorConditions: [] //array of conditions that may lead to target behavior
 * KPIs: [] //array of KPIs, for each .name, .current, .target
 * additionalInfo: [] //array of strings with additional info
-* responseDueDate //when this brief is to be responded to
-* goLiveDate // when campaign goes live
+* timing: [] //array of key points in timing
 * mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
@@ -49,4 +48,5 @@
 * add info / instructions
 * add first time instruction video? (shown only once)
 * add navbar
+* for editing and viewing -> implement app breathing to make sure that synced?
 * google analytics

@@ -203,7 +203,7 @@ Template.createNew.events = {
         return;
       } else {
         if(result) { //result is the _id of the new brief. edit links are always "secret" through the use of _id
-          Router.navigate("#/edit/"+result, true);
+          Router.navigate("#/edit/"+result, false);
         }
       }
     });
@@ -298,9 +298,12 @@ Template.edit.rendered = function() {
 
 Template.edit.events = {
   'click .accordion-toggle': function(e) {
-    //e.preventDefault();
+    e.preventDefault();
     var which = e.target.id;
-    Session.set('editStep', which.charAt(4));
+    Meteor.setTimeout(function() {
+      Session.set('editStep', which.charAt(4));
+      
+    }, 400);
     history.replaceState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
   },
   'click #finishEditing' : function() {
@@ -331,6 +334,7 @@ var myRouter = Backbone.Router.extend({
       Session.set('editStep', step);
     } else {
       Session.set('editStep', "1");
+      history.replaceState(null, null, "#/edit/"+id+"/step1");
     }
     Session.set('goWhere', 'edit');
     loadBrief("id", null, id, null, "edit");

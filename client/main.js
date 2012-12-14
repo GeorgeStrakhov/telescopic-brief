@@ -138,16 +138,18 @@ Handlebars.registerHelper('content', function() {
     targetSex : (b.targetSex) ? b.targetSex : "{male or female}",
     targetMinAge : (b.targetMinAge) ? b.targetMinAge : "0",
     targetMaxAge : (b.targetMaxAge) ? b.targetMaxAge : "99",
-    targetLifeConditions : (b.targetLifeConditions) ? b.targetLifeConditions : [],
+    targetLifeConditions : (b.targetLifeConditions) ? b.targetLifeConditions : "{target life conditions}",
     targetCurrentLife : (b.targetCurrentLife) ? b.targetCurrentLife : "{current life}",
-    targetChallenges : (b.targetChallenges) ? b.targetChallenges : [],
+    targetChallenges : (b.targetChallenges) ? b.targetChallenges : ["{target challenges}"],
     targetDreams : (b.targetDreams) ? b.targetDreams : ["{target dream 1}"],
     currentAttitude : (b.currentAttitude) ? b.currentAttitude : "{current attitude}",
     currentBehavior : (b.currentBehavior) ? b.currentBehavior : "{current behavior}",
     targetAttitude : (b.targetAttitude) ? b.targetAttitude : "{target attitude}",
     targetBehaviorConditions : (b.targetBehaviorConditions) ? b.targetBehaviorConditions : ["{target behavior condition 1}"],
-    KPIs : (b.KPIs) ? b.KPIs : [{name: "{indicator name}", current: "{current value}", target: "{target value}"}],
-    additionalInfo : (b.additionalInfo) ? b.additionalInfo : ["{additional point 1}"],    
+    KPIs : (b.KPIs) ? b.KPIs : ["{KPI1 changes from A to B}"],
+    additionalInfo : (b.additionalInfo) ? b.additionalInfo : ["{additional point 1}"],
+    mandatoryDeliverables : (b.mandatoryDeliverables) ? b.mandatoryDeliverables : ["{deliverable 1}"],
+    timing : (b.timing) ? b.timing : ["{what - when}"]
   };
   return content;
 });
@@ -271,11 +273,11 @@ Template.edit.rendered = function() {
     }
     if(d) {
       saveEditChanges(this.id, d);
-      var dHtml = "<ol><li>";
+      var dHtml = "<ul><li>";
       for (x=0; x<(d.length-1); x++) {
         dHtml += d[x]+"</li><li>";
       }
-      dHtml += d[d.length-1]+"</li></ol>";
+      dHtml += d[d.length-1]+"</li></ul>";
       return dHtml;
     } else {
       saveEditChanges(this.id, value);
@@ -298,8 +300,8 @@ Template.edit.events = {
   'click .accordion-toggle': function(e) {
     //e.preventDefault();
     var which = e.target.id;
-    //FIX!!! will something go wrong? Session.set('editStep', which.charAt(4));
-    history.pushState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
+    Session.set('editStep', which.charAt(4));
+    history.replaceState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
   },
   'click #finishEditing' : function() {
     Router.navigate("#/brief/"+Session.get('brief').name, false);

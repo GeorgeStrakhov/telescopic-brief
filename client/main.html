@@ -159,11 +159,11 @@
                 <div>
                   <p>In order to <span class="editable" id="businessGoal">{{content.businessGoal}}</span>, we need to:</p>
                   <div class="editable-list" id="businessObjectives">
-                    <ol>
+                    <ul>
                       {{#each content.businessObjectives}}
                         <li>{{this}}</li>
                       {{/each}}
-                    </ol>
+                    </ul>
                   </div>
                 </div>
               </div>
@@ -178,7 +178,29 @@
           </div>
           <div id="step3body" class="accordion-body collapse {{#if editStep '3'}}in{{/if}}">
             <div class="accordion-inner">
-              step3 stuff
+              <p>Our key target group is <span class="editable" id="targetGroup">{{content.targetGroup}}</span>.</p>
+              <p>They are <span class="editable" id="targetSex">{{content.targetSex}}</span> from <span class="editable" id="targetMinAge">{{content.targetMinAge}}</span> to <span class="editable" id="targetMaxAge">{{content.targetMaxAge}}</span> years old who live <span class="editable" id="targetLifeConditions">{{content.targetLifeConditions}}</span>.</p>
+              <p>In their daily life they <span class="editable" id="targetCurrentLife">{{content.targetCurrentLife}}</span>.</p>
+              <div>
+                <p>Some of the challenges that they face are:</p>
+                <div class="editable-list" id="targetChallenges">
+                  <ul>
+                    {{#each content.targetChallenges}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+              <div>
+                <p>They dream of:</p>
+                <div class="editable-list" id="targetDreams">
+                  <ul>
+                    {{#each content.targetDreams}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -190,7 +212,19 @@
           </div>
           <div id="step4body" class="accordion-body collapse {{#if editStep '4'}}in{{/if}}">
             <div class="accordion-inner">
-              step4 stuff
+              <p>We want <span class="editable" id="targetGroup">{{content.targetGroup}}</span> to <span class="editable" id="targetBehavior">{{content.targetBehavior}}</span>.</p>
+              <p>Currently they <span class="editable" id="currentBehavior">{{content.currentBehavior}}</span> instead.</p>
+              <p>They don't {{content.targetBehavior}} because they <span class="editable" id="currentAttitude">{{content.currentAttitude}}</span>.</p>
+              <div>
+                <p>They may <span class="editable" id="targetAttitude">{{content.targetAttitude}}</span> and {{content.targetBehavior}} if:
+                <div class="editable-list" id="targetBehaviorConditions">
+                  <ul>
+                    {{#each content.targetBehaviorConditions}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -202,7 +236,16 @@
           </div>
           <div id="step5body" class="accordion-body collapse {{#if editStep '5'}}in{{/if}}">
             <div class="accordion-inner">
-              step5 stuff
+              <div>
+                <p>We will know that we've made it if:</p>
+                <div class="editable-list" id="KPIs">
+                  <ul>
+                    {{#each content.KPIs}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -214,7 +257,45 @@
           </div>
           <div id="step6body" class="accordion-body collapse {{#if editStep '6'}}in{{/if}}">
             <div class="accordion-inner">
-              step 6:other things you need to know
+              <div>
+                <p>Other things that need to be considered:</p>
+                <div class="editable-list" id="additionalInfo">
+                  <ul>
+                    {{#each content.additionalInfo}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-group">
+          <div class="accordion-heading">
+            <a class="accordion-toggle" data-toggle="collapse" data-parent="#stepsaccordion" href="#step7body" id="step7">
+              Step #7: Deliverables and Timing
+            </a>
+          </div>
+          <div id="step7body" class="accordion-body collapse {{#if editStep '7'}}in{{/if}}">
+            <div class="accordion-inner">
+              <p>Timing:</p>
+              <div class="editable-list" id="timing">
+                <ul>
+                  {{#each content.timing}}
+                    <li>{{this}}</li>
+                  {{/each}}
+                </ul>
+              </div>
+              <div>
+                <p>Mandatory deliverables:</p>
+                <div class="editable-list" id="mandatoryDeliverables">
+                  <ul>
+                    {{#each content.mandatoryDeliverables}}
+                      <li>{{this}}</li>
+                    {{/each}}
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>

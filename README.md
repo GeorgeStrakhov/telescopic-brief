@@ -40,6 +40,9 @@
 * targetBehaviorConditions: [] //array of conditions that may lead to target behavior
 * KPIs: [] //array of KPIs, for each .name, .current, .target
 * additionalInfo: [] //array of strings with additional info
+* responseDueDate //when this brief is to be responded to
+* goLiveDate // when campaign goes live
+* mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
 * usability of 'edit' -> next button between stages

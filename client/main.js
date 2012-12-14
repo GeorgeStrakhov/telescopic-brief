@@ -298,7 +298,7 @@ Template.edit.events = {
   'click .accordion-toggle': function(e) {
     //e.preventDefault();
     var which = e.target.id;
-    Session.set('editStep', which.charAt(4));
+    //FIX!!! will something go wrong? Session.set('editStep', which.charAt(4));
     history.pushState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
   },
   'click #finishEditing' : function() {

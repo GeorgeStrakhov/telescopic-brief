@@ -42,4 +42,8 @@
 * additionalInfo: [] //array of strings with additional info
 
 ##TODO
+* usability of 'edit' -> next button between stages
+* add info / instructions
+* add first time instruction video? (shown only once)
+* add navbar
 * google analytics

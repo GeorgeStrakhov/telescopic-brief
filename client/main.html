@@ -151,9 +151,11 @@
           <div id="step2body" class="accordion-body collapse {{#if editStep '2'}}in{{/if}}">
             <div class="accordion-inner">
               <div>
-                <h5>We are <span class="editable" id="brandName">{{content.brandName}}</span>, <span class="editable" id="brandDefinition">{{content.brandDefinition}}</span>.</h5>
+                <p>We are <span class="editable" id="brandName">{{content.brandName}}</span>, <span class="editable" id="brandDefinition">{{content.brandDefinition}}</span>.</p>
                 <p><span class="editable" id="productName">{{content.productName}}</span> is <span class="editable" id="productDefinition">{{content.productDefinition}}</span>.</p>
-                <p>Currently, <span class="editable" id="currentSituation">{{content.currentSituation}}</span>.</p>
+                <p>
+                  <div class="editable-area" id="currentSituation">{{content.currentSituation}}</div>
+                </p>
                 <div>
                   <p>In order to <span class="editable" id="businessGoal">{{content.businessGoal}}</span>, we need to:</p>
                   <div class="editable-list" id="businessObjectives">

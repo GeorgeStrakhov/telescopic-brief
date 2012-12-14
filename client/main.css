@@ -26,6 +26,10 @@ html, body {
   border-bottom: 1px dotted black;
 }
 
+.editable-area, .editable-list {
+  border: 1px dotted black;
+}
+
 .credit {
   width: auto;
   padding-top: 10px;

@@ -249,7 +249,19 @@ Template.edit.rendered = function() {
     onblur: 'submit',
     tooltip: 'click to edit...'
   });
-  
+  //areas
+  $('.editable-area').editable(function(value, settings){
+    saveEditChanges(this.id, value);
+    //console.log(value);
+    //console.log(settings);
+    return value;
+  }, {//options
+    type: 'autogrow',
+    event: 'click',
+    onblur: 'submit',
+    tooltip: 'click to edit...',
+  }); 
+  //lists
   $('.editable-list').editable(function(value, settings) {
     //console.log(value);
     if(value) {
@@ -261,31 +273,30 @@ Template.edit.rendered = function() {
       saveEditChanges(this.id, d);
       var dHtml = "<ol><li>";
       for (x=0; x<(d.length-1); x++) {
-        dHtml += d[i]+"</li><li>";
+        dHtml += d[x]+"</li><li>";
       }
-      dHtml += d[d.length]+"</li></ol>";
+      dHtml += d[d.length-1]+"</li></ol>";
       return dHtml;
     } else {
       saveEditChanges(this.id, value);
       return value;
     }
   }, {
-    type: 'textarea',
+    type: 'autogrow',
     style: 'inherit',
     data: function(value, settings) {
       //console.log($(this).attr("id"));
       return markdownFromArray(Session.get('brief').content[$(this).attr("id")]);
     },
     event: 'click',
-    submit: 'ok',
-    cancel: 'cancel',
-    onblur: 'ignore',
+    onblur: 'submit',
     tooltip: 'click to edit...',
   });
 }
 
 Template.edit.events = {
   'click .accordion-toggle': function(e) {
+    //e.preventDefault();
     var which = e.target.id;
     Session.set('editStep', which.charAt(4));
     history.pushState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);

@@ -72,7 +72,11 @@
       {{else}}
         {{this.name}}
       {{/if}}
-    </a>
+    </a> - 
+    {{#if this._id}}
+      <a class="muted" href="#/edit/{{this._id}}/step1">edit</a> - 
+      <a class="muted" href="#" id="deleteBrief">delete</a>
+    {{/if}}
   </li>
 </template>
 

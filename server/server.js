@@ -177,4 +177,15 @@ Meteor.methods({
     Briefs.update(b._id, b);
     return Briefs.findOne(b._id);
   },
+  'deleteBrief' : function(id) {
+    if(!id) {
+      throw new Meteor.Error('403', 'no brief id passed');
+      return;
+    }
+    if(!Briefs.findOne(id)) {
+      throw new Meteor.Error('404', 'this brief has already been deleted');
+      return;
+    }
+    Briefs.remove(id);
+  }
 });

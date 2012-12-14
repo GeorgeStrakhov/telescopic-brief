@@ -238,6 +238,16 @@ Template.singleBriefLi.b = function() {
   return this.content;
 };
 
+Template.singleBriefLi.events = {
+  'click #deleteBrief' : function(e) {
+    e.preventDefault();
+    var yes = confirm("Are you sure? This can't be undone.");
+    if(yes) {
+      Meteor.call('deleteBrief', this._id, function(error, result) {notifyCallRes(error, result);});
+    }
+  },
+};
+
 Template.edit.rendered = function() {
   //console.log('rendered!');
   $('.editable').editable(function(value, settings){

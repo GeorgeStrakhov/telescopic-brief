@@ -158,8 +158,8 @@ Meteor.methods({
   },
   'updateBrief' : function(briefId, key, value) {
     //console.log(briefId+","+key+","+value);
-    if(!briefId || !key || !value) {
-      throw new Meteor.Error('403', 'brief id, key or value not passed');
+    if(!briefId || !key) {
+      throw new Meteor.Error('403', 'brief id or key not passed');
       return;
     }
     var b = Briefs.findOne(briefId);
@@ -167,7 +167,11 @@ Meteor.methods({
       throw new Meteor.Error('404', 'the brief you\'re trying to update doesn\'t exist any more');
       return;
     }
-    b.content[key] = value;
+    if(value) {
+      b.content[key] = value;
+    } else {
+      b.content[key] = undefined;
+    }
     var d = new Date();
     b.lastEdited = d.getTime();
     Briefs.update(b._id, b);

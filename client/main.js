@@ -74,6 +74,8 @@ function loadBrief(loadBy, name, id, pass, goWhere) {
 
 function saveEditChanges(key, value) { //key - fieldName, value - new value
   //console.log(key+':'+value);
+  key = key.toString();
+  //console.log(value);
   var b = Session.get('brief');
   //first we need to first update the local (Session.get('brief'))
   b.content[key] = value;
@@ -90,6 +92,21 @@ function saveEditChanges(key, value) { //key - fieldName, value - new value
     }
   });
 };
+
+function markdownFromArray(data) { //generates markdown (not really markdown, just new lines for now) from an array that is passed to it 
+    //console.log(data);
+    var md = "";
+    //console.log(data);
+    if(data && data[0]) {
+      for(i = 0; i<data.length-1; i++) {
+        md += "* "+data[i]+"\r\n";
+      }
+      md+= "* "+data[data.length-1];
+    } else {
+      md += "(type here, each new line will become a new item)";
+    }
+    return md;
+}
 
 ///////SUBSCRIBE///////////
 Meteor.subscribe("briefs");
@@ -117,20 +134,20 @@ Handlebars.registerHelper('content', function() {
     productDefinition : (b.productDefinition) ? b.productDefinition : "{product definition}",
     currentSituation : (b.currentSituation) ? b.currentSituation : "{current situation}",
     businessGoal : (b.businessGoal) ? b.businessGoal : "{business goal}",
-    businessObjectives : (b.businessObjectives) ? b.businessObjectives : [],
+    businessObjectives : (b.businessObjectives) ? b.businessObjectives : ["{business objective 1}"],
     targetSex : (b.targetSex) ? b.targetSex : "{male or female}",
     targetMinAge : (b.targetMinAge) ? b.targetMinAge : "0",
     targetMaxAge : (b.targetMaxAge) ? b.targetMaxAge : "99",
     targetLifeConditions : (b.targetLifeConditions) ? b.targetLifeConditions : [],
     targetCurrentLife : (b.targetCurrentLife) ? b.targetCurrentLife : "{current life}",
     targetChallenges : (b.targetChallenges) ? b.targetChallenges : [],
-    targetDreams : (b.targetDreams) ? b.targetDreams : [],
+    targetDreams : (b.targetDreams) ? b.targetDreams : ["{target dream 1}"],
     currentAttitude : (b.currentAttitude) ? b.currentAttitude : "{current attitude}",
     currentBehavior : (b.currentBehavior) ? b.currentBehavior : "{current behavior}",
     targetAttitude : (b.targetAttitude) ? b.targetAttitude : "{target attitude}",
-    targetBehaviorConditions : (b.targetBehaviorConditions) ? b.targetBehaviorConditions : [],
-    KPIs : (b.KPIs) ? b.KPIs : [],
-    additionalInfo : (b.additionalInfo) ? b.additionalInfo : [],    
+    targetBehaviorConditions : (b.targetBehaviorConditions) ? b.targetBehaviorConditions : ["{target behavior condition 1}"],
+    KPIs : (b.KPIs) ? b.KPIs : [{name: "{indicator name}", current: "{current value}", target: "{target value}"}],
+    additionalInfo : (b.additionalInfo) ? b.additionalInfo : ["{additional point 1}"],    
   };
   return content;
 });
@@ -231,6 +248,39 @@ Template.edit.rendered = function() {
     event: 'click',
     onblur: 'submit',
     tooltip: 'click to edit...'
+  });
+  
+  $('.editable-list').editable(function(value, settings) {
+    //console.log(value);
+    if(value) {
+      var expr = /\* /g;
+      value = value.replace(expr, "");
+      var d = value.split("\n");
+    }
+    if(d) {
+      saveEditChanges(this.id, d);
+      var dHtml = "<ol><li>";
+      for (x=0; x<(d.length-1); x++) {
+        dHtml += d[i]+"</li><li>";
+      }
+      dHtml += d[d.length]+"</li></ol>";
+      return dHtml;
+    } else {
+      saveEditChanges(this.id, value);
+      return value;
+    }
+  }, {
+    type: 'textarea',
+    style: 'inherit',
+    data: function(value, settings) {
+      //console.log($(this).attr("id"));
+      return markdownFromArray(Session.get('brief').content[$(this).attr("id")]);
+    },
+    event: 'click',
+    submit: 'ok',
+    cancel: 'cancel',
+    onblur: 'ignore',
+    tooltip: 'click to edit...',
   });
 }
 

@@ -44,9 +44,11 @@
 * mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
+* add timing and deliverables section to the .pdf brief
 * usability of 'edit' -> next button between stages
 * add info / instructions
 * add first time instruction video? (shown only once)
-* add navbar
-* for editing and viewing -> implement app breathing to make sure that synced?
+* add navbar for all views
+* generate .pdf (?how?) or other printable version
+* for viewing (but not editing!) -> implement app breathing to make sure that synced?
 * google analytics

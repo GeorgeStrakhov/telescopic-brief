@@ -30,6 +30,11 @@ html, body {
   border: 1px dotted black;
 }
 
+.nextBtn {
+  margin: 10px;
+  margin-left: 0px;
+}
+
 .credit {
   width: auto;
   padding-top: 10px;

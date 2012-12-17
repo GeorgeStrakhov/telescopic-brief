@@ -128,7 +128,10 @@
 <template name="edit">
   <div class="row">
     <div class="span12 centered">
-      <h2><span class="editable" id="briefDisplayName">{{content.briefDisplayName}}</span></h2>
+      <h2><span class="editable" id="briefDisplayName">{{content.briefDisplayName}}</span>
+      <div class="pull-right instructionsLink">
+        <a class="btn btn-small btn-primary" href="#" id="techInstructionsBtn">?</a>
+      </div></h2>
     </div>
   </div>
   <div class="row">
@@ -142,7 +145,9 @@
           </div>
           <div id="step1body" class="accordion-body collapse {{#if editStep '1'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <h4>We want <span class="editable" id="targetGroup">{{content.targetGroup}}</span> to <span class="editable" id="targetBehavior">{{content.targetBehavior}}</span>.</h4>
+              {{>nextButton}}
             </div>
           </div>
         </div>
@@ -154,6 +159,7 @@
           </div>
           <div id="step2body" class="accordion-body collapse {{#if editStep '2'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <div>
                 <p>We are <span class="editable" id="brandName">{{content.brandName}}</span>, <span class="editable" id="brandDefinition">{{content.brandDefinition}}</span>.</p>
                 <p><span class="editable" id="productName">{{content.productName}}</span> is <span class="editable" id="productDefinition">{{content.productDefinition}}</span>.</p>
@@ -171,6 +177,7 @@
                   </div>
                 </div>
               </div>
+              {{>nextButton}}
             </div>
           </div>
         </div>
@@ -182,6 +189,7 @@
           </div>
           <div id="step3body" class="accordion-body collapse {{#if editStep '3'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <p>Our key target group is <span class="editable" id="targetGroup">{{content.targetGroup}}</span>.</p>
               <p>They are <span class="editable" id="targetSex">{{content.targetSex}}</span> from <span class="editable" id="targetMinAge">{{content.targetMinAge}}</span> to <span class="editable" id="targetMaxAge">{{content.targetMaxAge}}</span> years old who live <span class="editable" id="targetLifeConditions">{{content.targetLifeConditions}}</span>.</p>
               <p>In their daily life they <span class="editable" id="targetCurrentLife">{{content.targetCurrentLife}}</span>.</p>
@@ -205,6 +213,7 @@
                   </ul>
                 </div>
               </div>
+              {{>nextButton}}
             </div>
           </div>
         </div>
@@ -216,6 +225,7 @@
           </div>
           <div id="step4body" class="accordion-body collapse {{#if editStep '4'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <p>We want <span class="editable" id="targetGroup">{{content.targetGroup}}</span> to <span class="editable" id="targetBehavior">{{content.targetBehavior}}</span>.</p>
               <p>Currently they <span class="editable" id="currentBehavior">{{content.currentBehavior}}</span> instead.</p>
               <p>They don't {{content.targetBehavior}} because they <span class="editable" id="currentAttitude">{{content.currentAttitude}}</span>.</p>
@@ -229,6 +239,7 @@
                   </ul>
                 </div>
               </div>
+              {{>nextButton}}
             </div>
           </div>
         </div>
@@ -240,6 +251,7 @@
           </div>
           <div id="step5body" class="accordion-body collapse {{#if editStep '5'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <div>
                 <p>We will know that we've made it if:</p>
                 <div class="editable-list" id="KPIs">
@@ -250,6 +262,7 @@
                   </ul>
                 </div>
               </div>
+              {{>nextButton}}
             </div>
           </div>
         </div>
@@ -261,6 +274,7 @@
           </div>
           <div id="step6body" class="accordion-body collapse {{#if editStep '6'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <div>
                 <p>Other things that need to be considered:</p>
                 <div class="editable-list" id="additionalInfo">
@@ -271,6 +285,7 @@
                   </ul>
                 </div>
               </div>
+              {{>nextButton}}
             </div>
           </div>
         </div>
@@ -282,6 +297,7 @@
           </div>
           <div id="step7body" class="accordion-body collapse {{#if editStep '7'}}in{{/if}}">
             <div class="accordion-inner">
+              {{>stepInstruction}}
               <p>Timing:</p>
               <div class="editable-list" id="timing">
                 <ul>
@@ -310,6 +326,120 @@
     <div class="span12 centered">
       <button class="btn btn-large btn-primary btn-block" id="finishEditing">finish editing</button>
     </div>
+  </div>
+</template>
+
+<template name="stepInstruction">
+  <div class="pull-right instructionsLink">
+    <a class="btn btn-small" href="#" id="instructionsBtn">?</a>
+  </div>
+  <!-- instructions modal -->
+  <div class="modal hide" id="instructionsModal">
+    <div class="modal-header">
+      <button type="button" class="close closeBtn" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Instructions:</h3>
+    </div>
+    <div class="modal-body">
+      {{#if techInstructions}}
+        <h4>Here you can edit your telepscopic brief.</h4>
+          <h5>Simple 7 steps process will help you organize your thinking.</h5>
+            <ol>
+              <li><strong>Key challenge</strong> - one sentence definition of what needs to be done.</li>
+              <li><strong>Background</strong> - everything we need to know to understand why this needs to be done.</li>
+              <li><strong>Target group</strong> - everything we need to know about the people whose behavior we're trying to change.</li>
+              <li><strong>Behavior Change</strong> - everything we need to know about what they feel, think and do now vs. what we want them to feel, think and do.</li>
+              <li><strong>Success Definition</strong> - how we'll know that we have succeeded or failed, how it will be measured.</li>
+              <li><strong>Additional Information</strong> - everything else worth knowing.</li>
+              <li><strong>Deliverables & Timing</strong> - what exactly is to be developed and project timing.</li>
+            </ol>
+            <p>If you are lost - every section has an instruction button in the upper right corner, that looks like this:</p> <p><button class="btn btn-small">?</button></p>
+        <h5>Editing is simple:</h5>
+          <ul>
+            <li>everything that is underlined or surrounded by a dotted line can be edited</li>
+            <li>in order to start editing - click the undelined word or area. When you are done - hit 'tab' or just click somewhere else.</li>
+            <li>all changes are saved to the server automatically</li>
+            <li>you don't have to fill in <strong>everything</strong>. Things that you leave blank (they show up as default values / hints inside curly braces) will not be shown in the final version of the brief.</li>
+            <li>you can collaborate with your colleagues via sharing the secret link below with them. Please make sure that you don't concurrently work on the same sections of the brief though, otherwise your changes might conflict.</li>
+          </ul>
+          <div class="well">
+            <p><strong>Secret link</strong></p>
+            <p>(don't share it with people you don't trust! This secret link gives anyone who has it the ability to instantly edit this page, just like you are doing it now).</p>
+            <input type="text" class="input-block-level" value="{{siteUrl}}#/edit/{{brief._id}}" />
+          </div>       
+      {{else}}
+        {{#if editStep "1"}}
+          <p><strong>Key Challenge</strong> section of the brief is about defining our <strong>target group</strong> and <strong>what we want them to think, feel and do</strong> in one sentence.</p>
+          <p>This sentence has to be short and crispy, it has to convey the very essence of the <strong>behavior change</strong> we are trying to achieve.</p>
+          <p>Look at a couple of examples:</p>
+          <blockquote><em>We want teen smokers to quit smoking.</em></blockquote>
+          <blockquote><em>We want London Fashionistas to buy and wear Hush Puppies</em></blockquote>
+        {{/if}}
+        {{#if editStep "2"}}
+          <p><strong>Background</strong> is about everything we need to know to understand why this brief came to life in the first place.</p>
+          <h5>Several things that can be defined in this section:</h5>
+            <ul>
+              <li><strong>Brand Name</strong> - the name of the organization behind this brief, e.g. <em>"McDonald's"</em>.</li>
+              <li><strong>Brand Definition</strong> - one sentence way to define who we are, e.g. <em>"people's favorite way of having good food fast"</em>.</li>
+              <li><strong>Product Name</strong> - the name of the product / initiative under the brand that we're focusing on for this brief, e.g. <em>"Big Mac"</em> .</li>
+              <li><strong>Product Definition</strong> - one sentence definition of this product, e.g. <em>"our most filling and best-known hero product"</em>.</li>
+              <li><strong>Current Situation</strong> - a longer description of current business background, e.g. <em>"With a lot of new burgers coming to the market, people started to loose connection with Big Mac which negatively affected our Q1 sales <...>".</em></li>
+              <li><strong>Business Goal</strong> - what we are trying to achieve (from a business performance standpoint) e.g. <em>"boost Big Mac sales and overall brand connection in Q4"</em>.</li>
+              <li><strong>Business objectives</strong> - a list of things that need to be done in order to achieve the business goal set above e.g. <em>"* remind people of the great taste and unique build of Big Mac; * drive traffic to the stores ..."</em>.</li>
+            </ul>
+        {{/if}}
+        {{#if editStep "3"}}
+          <p><strong>Target Group</strong> section is describing our target audience in a way that can help understand them better and empathise with their dreams and the challenges of their daily lives.</p>
+          <h5>Several things that can be defined in this section:</h5>
+            <ul>
+              <li><strong>Sex</strong> - male, female, both...</li>
+              <li><strong>Age</strong> - min. and max. age.</li>
+              <li><strong>Life Conditions</strong> - where and how our target audience lives, e.g. <em>"in large urban areas with their families"</em>.</li>
+              <li><strong>Current Life</strong> - short description of what they do in their daily lives, e.g. <em>"spend most of their time in the office, working very long hours"</em>.</li>
+              <li><strong>Challenges</strong> - the list of challenges the members of our target audience experience in their lives.</li>
+              <li><strong>Dreams</strong> - the list of what the members of our target audience might dream of.</li>
+            </ul>
+        {{/if}}
+        {{#if editStep "4"}}
+          <p><strong>Behavior Change</strong> section is the essence of the brief, it's focused on what the members of our target group feel, think and do now versus what we want them to feel, think and do.</p>
+          <h5>Several thinkgs that can be defined in this section:</h5>
+            <ul>
+              <li><strong>Current Behavior</strong> - what they do now instead of what we want them to do e.g. <em>"drink Pepsi"</em>.</li>
+              <li><strong>Current Attitude</strong> - what they think and feel now (which explains why they are not doing what they we want them to do) e.g. <em>"they don't think there is a big difference in taste or that drinking Cocacola will make any difference to their image"</em>.</li>
+              <li><strong>Target Attitude</strong> - what we want them to feel and think e.g. <em>"start to believe that Cocacola is going to make them happier"</em>.</li>
+              <li><strong>Target Behavior Conditions</strong> - a list of conditions that may lead to behavior change e.g. <em>"* they see their more popular friends and celebrities drinking Cocacola"</em>.</li>
+            </ul>
+        {{/if}}
+        {{#if editStep "5"}}
+          <p><strong>Success Definition</strong> section is about clearly defining where exactly we want to get and how we will know if and to what extent we have achieved the desired behavior change.</p>
+          <h5>We're defining success in a list of KPIs:</h5>
+            <ul>
+              <li>e.g. <em>"Brand awareness which is now at 10% jumps up to 25% within 1 month after campaign start"</em>.</li>
+              <li>e.g. <em>"Campaign is covered in the news generating at least 250k worth of free media"</em>.</li>
+            </ul>
+        {{/if}}
+        {{#if editStep "6"}}
+          <p><strong>Additional Information</strong> section - here you can put everything else that you think is important.</p>
+        {{/if}}
+        {{#if editStep "7"}}
+          <p><strong>Deliverables & Timing</strong> section - here you can define when and what needs to be developed.</p>
+            <ul>
+              <li><strong>Timing</strong> - the list of milestones in the process and when they happen. e.g. <em>"* 12/02 - 1st creative review; * 14/03 - presentation to the Client; * 19/07 - campaign goes live"</em></li>
+              <li><strong>Deliverables</strong> - the list of key things that need to be developed against this brief. e.g. <em>"* Big Idea; * TVC; * POP; * OOH..."</em></li>
+            </ul>
+        {{/if}}
+      {{/if}}
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn closeBtn pull-left">Ok, got it!</a>
+    </div>
+  </div>
+</template>
+
+<template name="nextButton">
+  <div>
+    <a <a class="btn btn-small btn-primary nextBtn" data-toggle="collapse" data-parent="#stepsaccordion" href="#step{{next}}body" id="step{{next}}">
+      go to next step
+    </a>
   </div>
 </template>
 

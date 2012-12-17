@@ -114,6 +114,10 @@ Meteor.subscribe("briefs");
 ////////////REACTIVE AUTOSUBSCRIBE HELPERS//////////
 
 ///////////SITE-WIDE HANDLEBARS HELPERS//////////
+Handlebars.registerHelper('siteUrl', function() {
+  return Meteor.absoluteUrl();
+});
+
 Handlebars.registerHelper('view', function(which) {
   return Session.get('view') == which;
 });
@@ -313,12 +317,54 @@ Template.edit.events = {
     Meteor.setTimeout(function() {
       Session.set('editStep', which.charAt(4));
       
-    }, 400);
+    }, 300);
     history.replaceState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
   },
   'click #finishEditing' : function() {
     Router.navigate("#/brief/"+Session.get('brief').name, false);
-  }
+  },
+  'click #techInstructionsBtn' : function(e) {
+    e.preventDefault();
+    Session.set('techInstructions', true);
+    Meteor.flush();
+    $("#instructionsModal").show();
+  },
+};
+  
+Template.nextButton.next = function() {
+  return Number(Session.get('editStep'))+1;
+};
+
+Template.nextButton.events = {
+  'click .nextBtn': function(e) {
+    e.preventDefault();
+    var which = e.target.id;
+    Meteor.setTimeout(function() {
+      Session.set('editStep', which.charAt(4));
+      
+    }, 300);
+    history.replaceState(null, null, "#/edit/"+Session.get('brief')._id+"/"+which);
+  },
+};
+
+Template.stepInstruction.step = function() {
+  return Session.get('editStep');
+};
+
+Template.stepInstruction.techInstructions = function() {
+  return Session.get('techInstructions');
+};
+
+Template.stepInstruction.events = {
+  'click #instructionsBtn' : function(e) {
+    e.preventDefault();
+    $("#instructionsModal").show();
+  },
+  'click .closeBtn' : function(e) {
+    e.preventDefault();
+    $("#instructionsModal").hide();
+    Session.set('techInstructions', false);
+  },
 };
 
 //////////ROUTER///////////

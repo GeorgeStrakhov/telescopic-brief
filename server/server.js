@@ -84,7 +84,7 @@ Meteor.methods({
       return;
     }
     if(forkedFrom) {
-      if(!Briefs.findOne(forkedFrom)) {
+      if(!Briefs.findOne({name: forkedFrom})) {
         throw new Meteor.Error('403', 'Can\'t fork from a brief that doesn\'t exist');
         return;
       }
@@ -97,6 +97,16 @@ Meteor.methods({
     } else {
       var createdBy = userEmail;
     }
+    var origin = {};
+    if(forkedFrom && Briefs.findOne({name: forkedFrom})) {
+      origin = Briefs.findOne({name: forkedFrom});
+    }
+    if(origin.content) {
+      origin.content.briefDisplayName = name;
+    } else {
+      origin.content = {};
+      origin.content.briefDisplayName = name;
+    }
     var d = new Date();
     newBriefId = Briefs.insert({
       lastModified: d.getTime(),
@@ -106,9 +116,9 @@ Meteor.methods({
       password: (password) ? password : undefined,
       name: name,
       createdBy: createdBy,
-      forkedFrom: (forkedFrom) ? forkedFrom : undefined,
-      defaultView: "telescopic",
-      content: {briefDisplayName: name}
+      forkedFrom: (origin._id) ? origin._id : undefined,
+      defaultView: (origin.defaultView) ? origin.defaultView : "paragraph",
+      content: origin.content
     });
     if(!this.userId && !(userEmail =="")) {//not a user - send an email with links to view and edit
       Email.send({

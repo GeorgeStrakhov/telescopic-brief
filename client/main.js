@@ -304,10 +304,6 @@ Template.navbarBriefOptions.events = {
     e.preventDefault();
     alert('under construction...');
   },
-  'click #fork' : function(e) {
-    e.preventDefault();
-    alert('unde construction...');
-  },
 };
 
 Template.navbarEditOptions.defaultView = function(which) {
@@ -400,7 +396,7 @@ Template.createNew.events = {
       return;
     }
     loading('show');
-    Meteor.call('createNewBrief', $("#briefName").val(), $("#passwordProtect").is(':checked'), $("#briefPassword").val(), $("#userEmail").val(), false, function(error,result) {    
+    Meteor.call('createNewBrief', $("#briefName").val(), $("#passwordProtect").is(':checked'), $("#briefPassword").val(), $("#userEmail").val(), Session.get('forkedFrom'), function(error,result) {    
       if(error) {
         notifyCallRes(error,null);
         loading('hide');
@@ -572,7 +568,8 @@ var myRouter = Backbone.Router.extend({
   routes: {
     "brief/:name/view/:view*asdk" : "brief",
     "brief/:name*stuff": "brief",
-    "new": "createNew",
+    "new/from/:from" : "createNew",
+    "new*stuff": "createNew",
     "edit/:id/step:step" : "edit",
     "edit/:id*stuff" : "edit",
     "pdf" : "pdf",
@@ -614,7 +611,11 @@ var myRouter = Backbone.Router.extend({
   pdf: function() {
     Session.set('view', 'pdf');
   },
-  createNew: function() {
+  createNew: function(from) {
+    if(from)
+      Session.set('forkedFrom', from)
+    else
+      Session.set('forkedFrom', false);
     Session.set('view', 'createNew');
   },
   page404: function() {

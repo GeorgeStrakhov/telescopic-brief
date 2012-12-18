@@ -376,7 +376,7 @@
               <div>
                 <p>Other things that need to be considered:</p>
                 <div class="editable-list" id="additionalInfo">
-                  <ul> styleggllkhs
+                  <ul>
                     {{#each content.additionalInfo}}
                       <li>{{this}}</li>
                     {{/each}}
@@ -568,7 +568,144 @@
 </template>
 
 <template name="briefParagraph">
-  <h2>Paragraph</h2>
+  {{#if isMyBrief}}
+  <div class="pull-right">
+    <p><a href="#/edit/{{brief._id}}/step1">edit this brief</a></p>
+  </div>
+  {{/if}}
+  <h2>{{content.briefDisplayName}}</h2>
+  <!-- background -->
+  <h3>Background</h3>
+  {{#if btext.aboutBrand}}
+    <p>{{btext.aboutBrand}}</p>
+  {{/if}}
+  {{#if btext.aboutProduct}}
+    <p>{{btext.aboutProduct}}</p>
+  {{/if}}
+  {{#if btext.currentSituation}}
+    <p>{{btext.currentSituation}}</p>
+  {{/if}}
+  {{#if btext.businessObjectives}}
+    {{#if btext.businessGoal}}
+      <p>In order to {{btext.businessGoal}}, we need to:</p>
+      <ul>
+        {{#each btext.businessObjectives}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>    
+    {{else}}
+      <p>Our business objectives are:</p>
+      <ul>
+        {{#each btext.businessObjectives}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    {{/if}}   
+  {{else}}
+    {{#if btext.businessGoal}}
+      <p>Our business goal is to {{btext.businessGoal}}.</p>
+    {{/if}}
+  {{/if}}
+  <hr />
+  <!--target group-->
+  <h3>Target Group</h3>
+  {{#if btext.targetDefinition}}
+    <p>{{btext.targetDefinition}}</p>
+  {{/if}}
+  {{#if btext.aboutTarget}}
+    <p>{{btext.aboutTarget}}</p>
+  {{/if}}
+  {{#if btext.targetChallenges}}
+    <p>Some of the challenges that they face in are:</p>
+    <ul>
+      {{#each btext.targetChallenges}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+  {{#if btext.targetDreams}}
+    <p>They dream of:</p>
+    <ul>
+      {{#each btext.targetDreams}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+  <hr />
+  <!-- behavior change -->
+  <h3>Behavior Change</h3>
+  {{#if btext.keyChallenge}}
+    <p>{{btext.keyChallenge}}</p>
+  {{/if}}
+  {{#if btext.theyDoInstead}}
+    <p>{{btext.theyDoInstead}}</p>
+  {{/if}}
+  {{#if btext.whyTheyDont}}
+    <p>{{btext.whyTheyDont}}</p>
+  {{/if}}
+  {{#if btext.targetBehaviorConditions}}
+    {{#if btext.targetAttitude}}
+      <p>They may {{btext.targetAttitude}} and {{btext.targetBehavior}} if:</p>
+      <ul>
+        {{#each btext.targetBehaviorConditions}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>   
+    {{else}}
+      <p>Here are some conditions under which they may change their behavior and {{btext.targetBehavior}}:</p>
+      <ul>
+        {{#each btext.targetBehaviorConditions}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  {{else}}
+    {{#if btext.targetAttitude}}
+      <p>We want them to {{btext.targetAttitude}}.</p>
+    {{/if}}
+  {{/if}}
+  <hr />
+  <!-- success definition -->
+  <h3>Success Definition</h3>
+  {{#if btext.KPIs}}
+    <p>We will know that we've made it if:</p>
+    <ul>
+      {{#each btext.KPIs}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+  <hr />
+  <!-- additional information -->
+  <h3>Additional Information</h3>
+  {{#if btext.additionalInfo}}
+    <p>Here are other things you need to know:</p>
+    <ul>
+      {{#each btext.additionalInfo}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+  <hr />
+  <!-- timing & deliverables -->
+  <h3>Timing & Deliverables</h3>
+  {{#if btext.timing}}
+    <p>Timing:</p>
+    <ul>
+      {{#each btext.timing}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+  {{#if btext.mandatoryDeliverables}}
+    <p>Mandatory Deliverables:</p>
+    <ul>
+      {{#each btext.mandatoryDeliverables}}
+        <li>{{this}}</li>
+      {{/each}}
+    </ul>
+  {{/if}}
+  <hr />
 </template>
 
 <template name="briefPresentation">

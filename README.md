@@ -44,11 +44,11 @@
 * mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
-* add to edit screen ability to choose brief defaultView (brief options modal)
-* add to edit screen ability to add / change password (brief options modal)
+* develop briefViews: paragraph, table, telescopic, presentation
+* add briefs to my briefs if I am signed in and visit a brief (to readers or owners depneding)
+* implement signIn magic (preserve briefs, add to my briefs, what if I cancel,...)
 * add timing and deliverables section to the .pdf brief
+* redesign myBriefs view
 * add first time instruction video? (shown only once)
-* add navbar for all views
 * generate .pdf (?how?) or other printable version
-* for viewing (but not editing!) -> implement app breathing to make sure that synced?
-* google analytics
+* google analytics && / || gauges

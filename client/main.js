@@ -147,6 +147,65 @@ Handlebars.registerHelper('brief', function() {
   return Session.get('brief');
 });
 
+Handlebars.registerHelper('btext', function() { //constructing the sentences of the brief for viewing
+  var btext = Session.get('brief').content;
+  //keyChallenge
+  btext.keyChallenge = (btext.targetGroup && !(btext.targetGroup == "") && btext.targetBehavior && !(btext.targetBehavior == "")) ? "We want "+btext.targetGroup+" to "+btext.targetBehavior+"." : "";
+  //aboutBrand
+  btext.aboutBrand = "";
+  if(btext.brandName && !(btext.brandName == ""))
+    btext.aboutBrand += "We are "+btext.brandName;
+  if(btext.brandDefinition && btext.brandDefinition != "")
+    btext.aboutBrand += ", "+btext.brandDefinition;
+  if(btext.aboutBrand != "") {
+    btext.aboutBrand +=".";
+  } else {
+    btext.aboutBrand = false;
+  }
+  //aboutProduct
+  btext.aboutProduct = "";
+  if(btext.productName && !(btext.productName == ""))
+    btext.aboutProduct += btext.productName;
+  if(btext.productDefinition && btext.productDefinition != "")
+    btext.aboutProduct += " is "+btext.productDefinition;
+  if(btext.aboutProduct != "")
+    btext.aboutProduct +="."; 
+  else
+    btext.aboutProduct = false;
+  //currentSituation
+  if(!(btext.currentSituation && btext.currentSituation != ""))
+    btext.currentSituation = false;
+  //targetDefinition
+  if(btext.targetGroup && btext.targetGroup != "")
+    btext.targetDefinition = "Our key target group is "+btext.targetGroup+".";
+  //aboutTarget
+  btext.aboutTarget = "";
+  if(btext.targetSex && btext.targetSex != "")
+    btext.aboutTarget += "They are "+btext.targetSex;
+  if(btext.targetMinAge && btext.targetMaxAge)
+    btext.aboutTarget += " from "+btext.targetMinAge+" to "+btext.targetMaxAge+" years old";
+  if(btext.targetLifeConditions && btext.targetLifeConditions != "")
+    btext.aboutTarget += ", who live "+btext.targetLifeConditions;
+  if(btext.aboutTarget !="")
+    btext.aboutTarget += "."
+  else
+    btext.aboutTarget = false;
+  //theyDoInstead
+  if(btext.currentBehavior && btext.currentBehvaior != "") {
+    btext.theyDoInstead = "Currently they "+btext.currentBehavior+" instead.";
+  } else {
+    btext.theyDoInstead = false;
+  }
+  //whyTheyDont
+  if(btext.currentAttitude && btext.currentAttitude != "") {
+    btext.whyTheyDont = "Currently they don\'t "+btext.targetBehavior+" because "+btext.currentAttitude+".";
+  } else {
+    btext.whyTheyDont = false;
+  }  
+  
+  return btext;
+});
+
 Handlebars.registerHelper('content', function() {
   var b = Session.get('brief').content;
   var content = {

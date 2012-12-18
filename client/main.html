@@ -45,7 +45,7 @@
 <template name="myApp">
   <div class="row">
     <div class="span12">
-      <h2>my briefs:</h2>
+      <h2>My briefs:</h2>
       <ul>
         {{#if myBriefs}}
           {{#each myBriefs}}
@@ -557,10 +557,22 @@
 </template>
 
 <template name="briefTelescopic">
-  <h2>{{content.briefDisplayName}}</h2>
   {{#if isMyBrief}}
+  <div class="pull-right">
     <p><a href="#/edit/{{brief._id}}/step1">edit this brief</a></p>
+    <p><a href="#" id="toggleCollaps">expand all</a></p>
+  </div>
   {{/if}}
+  <h2>{{content.briefDisplayName}}</h2>
+  <div class="allTelescopic">
+      <span class="collapsTelescopic hide" id="backgroundPart">We are {{btext.brandName}}, {{btext.brandDefinition}}. {{btext.productName}} is {{btext.productDefinition}}. {{btext.currentSituation}} In order to {{btext.businessGoal}} we need to {{#each btext.businessObjectives}}{{this}}, {{/each}}etc.</span>
+      <span class="collapsTelescopic hide" id="targetGroupPart"><a class="collapsControl collapsControl-active" href="#" collaps-toggle="backgroundPart" id="we2">We</a> want to reach {{btext.targetGroup}}. They are {{btext.targetSex}} from {{btext.targetMinAge}} to {{btext.targetMaxAge}} years old who live {{btext.targetLifeConditions}}. In their daily lives they {{btext.targetCurrentLife}}. They face challenges such as {{#each btext.targetChallenges}}{{this}}, {{/each}}etc. They dream of {{#each btext.targetDreams}}{{this}}, {{/each}}etc.</span>
+      <span id="keyChallengePart"><a class="collapsControl collapsControl-active" href="#" collaps-toggle="backgroundPart" collaps-deactivate="we2" id="we1">We</a> want <a class="collapsControl collapsControl-active" href="#" collaps-toggle="targetGroupPart" collaps-deactivate="we1">{{btext.targetGroup}}</a> to <a id="targetBehavior" class="collapsControl collapsControl-active" href="#" collaps-toggle="successDefinitionPart" collaps-reactivate-id="behaviorChangePart">{{btext.targetBehavior}}</a>.</span>
+      <span class="collapsTelescopic hide" id="behaviorChangePart">Currently they {{btext.currentBehavior}} instead. They don't {{btext.targetBehavior}}, because they {{btext.currentAttitude}}. They may {{btext.targetAttitude}} and {{btext.targetBehavior}} if {{#each btext.targetBehaviorConditions}}{{this}}, {{/each}}etc.</span>
+      <span class="collapsTelescopic hide" id="successDefinitionPart">We'll know that we've made it if {{#each btext.KPIs}}{{this}}, {{/each}} etc.</span>
+      <span class="collapsTelescopic hide" id="additionalInfoPart">Here are some other things that need to be taken into account: {{#each btext.additionalInfo}}{{this}}, {{/each}}etc.</span>
+      <span class="collapsTelescopic hide" id="timingAndDeliverablesPart">In response to this brief we need to develop: {{#each btext.mandatoryDeliverables}}{{this}}, {{/each}} other things that make the idea bigger. Key upcoming milestones for this project are: {{#each btext.timing}}{{this}}, {{/each}} etc.</span>
+  </div>
 </template>
 
 <template name="briefTable">

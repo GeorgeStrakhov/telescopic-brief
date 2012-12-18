@@ -57,6 +57,19 @@ html, body {
   font-size: 0.8em;
 }
 
+/*collaps telescopic stuff here */
+.collapsControl-active, .collapsControl:link, .collapsControl:visited, .collapsControl:hover, .collapsControl:active {
+  text-decoration: none;
+  color: #333;
+  cursor: default;
+}
+
+.collapsControl-active, .collapsControl-active:link, .collapsControl-active:visited, .collapsControl-active:hover, .collapsControl-active:active {
+  border-bottom: 1px dotted black;
+  cursor: pointer;
+}
+/*end of collaps telescopic*/
+
 #innerContent {
   padding-top:60px;
 }

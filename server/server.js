@@ -124,7 +124,7 @@ Meteor.methods({
       Email.send({
         from : "telescopicbrief@gmail.com",
         to : userEmail,
-        subject: "your new telescopic Brief",
+        subject: "Your new Telescopic Brief",
         html: '<!DOCTYPE HTML><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><body><p>Thanks for checking out <a href="'+Meteor.absoluteUrl()+'">Telescopic Brief</a></p><p>You can view your new brief <a href="'+Meteor.absoluteUrl()+'#/brief/'+name+'"here</a>.</p><p>You can also edit your new brief using <a href="'+Meteor.absoluteUrl()+'#/edit/'+newBriefId+'">this secret link</a>. But don\'t tell it to anybody else, unless you want them to be able to edit this brief as well.</p><p>Next time around make sure you sign in with Facebook, so that you can later view all your briefs in one place, edit them and more.</p><p>Have fun!</p><p>Best,</p><p><a href="'+Meteor.absoluteUrl()+'">Telescopic Brief</a></p></body></html>',
       });
     }

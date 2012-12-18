@@ -563,6 +563,39 @@ Template.stepInstruction.events = {
   },
 };
 
+Template.briefTelescopic.events = {
+  'click #toggleCollaps' : function(e) {
+    e.preventDefault();
+    if($("#toggleCollaps").html() == "expand all") {
+      $("#toggleCollaps").html("collapse all");
+      $(".collapsTelescopic").show();
+      $(".collapsControl").removeClass('collapsControl-active');
+    } else {
+      /*FIX! reload the whole thing??? otherwise second time it doesn't go correclty*/
+      $("#toggleCollaps").html("expand all");
+      $(".collapsTelescopic").hide();    
+      $(".collapsControl").addClass('collapsControl-active');     
+    }
+  },
+  'click .collapsControl' : function(e) {
+    e.preventDefault();
+    var idToShow = $(e.target).attr('collaps-toggle');
+    var idToDeactivate = $(e.target).attr('collaps-deactivate');
+    var reactivateToId = $(e.target).attr('collaps-reactivate-id');
+    if(idToDeactivate) {
+      $("#"+idToDeactivate).removeClass('collapsControl-active');
+    }
+    //console.log(idToShow);
+    $("#"+idToShow).show();
+    if(reactivateToId) {
+      $(e.target).attr('collaps-toggle', reactivateToId);
+      $(e.target).attr('collaps-reactivate-id', null);
+    } else {
+      $(e.target).removeClass('collapsControl-active');
+    }
+  },
+};
+
 //////////ROUTER///////////
 var myRouter = Backbone.Router.extend({
   routes: {

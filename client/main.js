@@ -39,7 +39,7 @@ function loading(doWhat) {
     $("#loading").hide();
 };
 
-function loadBrief(loadBy, name, id, pass, goWhere) {
+function loadBrief(loadBy, name, id, pass, goWhere, briefView) {
   loading('show');
   Meteor.setTimeout(function(){
     Meteor.call('lookUpBrief', loadBy, name, id, pass, function(error, result) {
@@ -64,7 +64,13 @@ function loadBrief(loadBy, name, id, pass, goWhere) {
             if(goWhere == "edit") {
               Session.set('view', 'edit');
             } else {
-              Session.set('view', result.defaultView);
+              Session.set('view', 'brief');
+              if(briefView) {
+                Session.set('briefView', briefView);
+              } else {
+                Session.set('briefView', result.defaultView);
+                history.replaceState(null, null, Meteor.absoluteUrl()+"#/brief/"+Session.get('brief').name+"/view/"+result.defaultView);
+              }
             }
           }
         }
@@ -72,7 +78,15 @@ function loadBrief(loadBy, name, id, pass, goWhere) {
     })}, 1000); //can we fix this to be better than a fixed number of milliseconds? otherwise error is shown first.
 };
 
+function saving(what) {
+  if(what == 'saving')
+    $("#saving").html("saving...");
+  else
+    $("#saving").html("all changes saved");
+};
+
 function saveEditChanges(key, value) { //key - fieldName, value - new value
+  saving('saving');
   //console.log(key+':'+value);
   key = key.toString();
   //console.log(value);
@@ -80,15 +94,14 @@ function saveEditChanges(key, value) { //key - fieldName, value - new value
   //first we need to first update the local (Session.get('brief'))
   b.content[key] = value;
   Session.set('brief', b);  
-  //second we need to send the update to the server via Meteor.call('updateBrief', key, value); - optionally we can notify the user that all the changes have been saved (callback from Meteor.Call)
-  
-  //FIX show little loading spinner
+  //second update on the server
 
   Meteor.call('updateBrief', b._id, key.toString(), value, function(error, result) {
     if(error)
       notify('error', error.reason);
+      saving('saved');
     if(result) {
-      //FIX here we need to hide the little loading spinner
+      saving('saved');
     }
   });
 };
@@ -120,6 +133,14 @@ Handlebars.registerHelper('siteUrl', function() {
 
 Handlebars.registerHelper('view', function(which) {
   return Session.get('view') == which;
+});
+
+Handlebars.registerHelper('briefView', function(which) {
+  if(Session.get('briefView')) {
+    return Session.get('briefView') == which;
+  } else {
+    return 'telescopic' == which;
+  }
 });
 
 Handlebars.registerHelper('brief', function() {
@@ -184,6 +205,126 @@ Template.welcome.events = {
     Meteor.loginWithFacebook(function() {
       loading('hide');
       Session.set('view', 'myApp');
+    });
+  },
+};
+
+Template.navbarUser.events = {
+  'click #signOut' : function(e) {
+    e.preventDefault();
+    loading('show');
+    Meteor.logout(function() {
+      window.location.href=Meteor.absoluteUrl();
+      loading('hide');
+    });
+  },
+};
+
+Template.navbarNonUser.events = {
+  'click #signIn' : function(e) {
+    e.preventDefault();
+    loading('show');
+    Meteor.loginWithFacebook(function() {
+      loading('hide'); 
+      Session.set('view', 'myApp'); //FIXX! here we need to redirect the user to where he was and add the brief he was viewing t/ editing o his briefs
+    });
+  },
+};
+
+Template.navbarBriefOptions.events = {
+  'click .viewSwitch' : function(e) {
+    e.preventDefault();
+    var newView = e.target.id;
+    //console.log(newView)
+    if(!(newView == Session.get('briefView'))) {
+      Session.set('briefView', newView);
+      history.pushState(null, null, Meteor.absoluteUrl()+"#/brief/"+Session.get('brief').name+"/view/"+newView);
+    }
+  },
+  'click #downloadPdf' : function(e) {
+    e.preventDefault();
+    alert('under construction...');
+  },
+  'click #fork' : function(e) {
+    e.preventDefault();
+    alert('unde construction...');
+  },
+};
+
+Template.navbarEditOptions.defaultView = function(which) {
+  return Session.get('brief').defaultView == which;
+};
+
+Template.navbarEditOptions.events = {
+  'click #delete' : function(e) {
+    e.preventDefault();
+    var yes = confirm("Are you sure? This can't be undone.");
+    if(yes) {
+      Meteor.call('deleteBrief', Session.get('brief')._id, function(error, result) {notifyCallRes(error, result);
+        if(result == 'brief successfully deleted')
+          Router.navigate('#', true);
+      });
+    }
+  },
+  'click #addPass' : function(e) {
+    e.preventDefault();
+    var pass = prompt('New Password');
+    if(!pass || pass=="") {
+      notify('error', 'password can\'t be blank');
+      return;
+    }      
+    if(pass) {
+      Meteor.call('changeBriefPass', Session.get('brief')._id, pass, function(error, result) {notifyCallRes(error,result)
+        if(result) {
+          var b = Session.get('brief');
+          b.password = pass;
+          b.passwordProtected = true;
+          Session.set('brief', b);
+          Meteor.flush();
+        }      
+      });
+    }
+  },
+  'click #deletePass' : function(e) {
+    e.preventDefault();
+    var yes = confirm('This brief will be publicly available without a password. Are you sure?');
+    if (yes) {
+      Meteor.call('changeBriefPass', Session.get('brief')._id, null, function(error, result) {notifyCallRes(error,result)
+        if(result) {
+          var b = Session.get('brief');
+          b.password = undefined;
+          b.passwordProtected = false;
+          Session.set('brief', b);
+          Meteor.flush();
+        }      
+      });     
+    }
+  },
+  'click #changePass' : function(e) {
+    e.preventDefault();
+    var pass = (prompt('Password', Session.get('brief').password));
+    if(pass) {
+      Meteor.call('changeBriefPass', Session.get('brief')._id, pass, function(error, result) {notifyCallRes(error,result);
+        if(result) {
+          var b = Session.get('brief');
+          b.password = pass;
+          Session.set('brief', b);
+        }
+      });
+    } else {
+      notify('error', 'password can\'t be blank');
+    }
+  },
+  'click .defaultViewSwitch' : function(e) {
+    e.preventDefault();
+    var newView = e.target.id;
+    Meteor.call('changeDefaultView', Session.get('brief')._id, newView, function(error, result) {
+      notifyCallRes(error,result);
+      if(result) {
+        var b = Session.get('brief');
+        b.defaultView = newView;
+        Session.set('brief', b);
+      }
     });
   },
 };
@@ -370,10 +511,11 @@ Template.stepInstruction.events = {
 //////////ROUTER///////////
 var myRouter = Backbone.Router.extend({
   routes: {
-    "brief/:name": "brief",
+    "brief/:name/view/:view*asdk" : "brief",
+    "brief/:name*stuff": "brief",
     "new": "createNew",
     "edit/:id/step:step" : "edit",
-    "edit/:id" : "edit",
+    "edit/:id*stuff" : "edit",
     "pdf" : "pdf",
     "": "main",
     "*stuff": "page404"
@@ -395,9 +537,20 @@ var myRouter = Backbone.Router.extend({
     Session.set('goWhere', 'edit');
     loadBrief("id", null, id, null, "edit");
   },
-  brief: function(name) {
+  brief: function(name, view) {
+    if(view) {
+      view = view.toString();
+      var validViews = ['telescopic', 'table', 'paragraph', 'presentation'];
+      if($.inArray(view, validViews) == -1) {
+        view = 'telescopic';
+        history.replaceState(null, null, "#/brief/"+name+"/view/telescopic");
+      }
+    } else {
+      history.replaceState(null, null, "#/brief/"+name+"/view/telescopic");
+    }
+    //console.log(view);
     Session.set('goWhere', 'brief');
-    loadBrief("name", name, null, null, "brief");
+    loadBrief("name", name, null, null, "brief", view);
   },
   pdf: function() {
     Session.set('view', 'pdf');

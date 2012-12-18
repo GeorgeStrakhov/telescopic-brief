@@ -177,6 +177,37 @@ Meteor.methods({
     Briefs.update(b._id, b);
     return Briefs.findOne(b._id);
   },
+  'changeDefaultView' : function(id, view) {
+    if(!view) {
+      throw new Meteor.Error('403', 'no view passed');
+      return;
+    }
+    if(!(view=='telescopic' || view=='table' || view=='presentation' || view=='paragraph')) {
+      throw new Meteor.Error('403', 'incorrect view passed');
+      return;
+    }
+    if(!id || !Briefs.findOne(id)) {
+      throw new Meteor.Error('404', 'brief not found');
+      return;
+    }
+    Briefs.update(id, {$set: {defaultView: view}});
+    return 'default view successfully updated';
+  },
+  'changeBriefPass' : function(id, pass) {
+    if(!id || !Briefs.findOne(id)) {
+      throw new Meteor.Error('404', 'brief not found');
+      return;
+    }
+    if(pass) {
+      Briefs.update(id, {$set: {passwordProtected: true}});
+      Briefs.update(id, {$set: {password: pass}});
+      return 'password successfully updated';
+    } else {
+      Briefs.update(id, {$set: {passwordProtected: false}});
+      Briefs.update(id, {$set: {password: undefined}});   
+      return 'this brief is now accessible without a password';
+    }
+  },
   'deleteBrief' : function(id) {
     if(!id) {
       throw new Meteor.Error('403', 'no brief id passed');
@@ -187,5 +218,6 @@ Meteor.methods({
       return;
     }
     Briefs.remove(id);
+    return 'brief successfully deleted';
   }
 });

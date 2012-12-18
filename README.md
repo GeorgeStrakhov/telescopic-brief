@@ -44,9 +44,9 @@
 * mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
+* add to edit screen ability to choose brief defaultView (brief options modal)
+* add to edit screen ability to add / change password (brief options modal)
 * add timing and deliverables section to the .pdf brief
-* usability of 'edit' -> next button between stages
-* add info / instructions
 * add first time instruction video? (shown only once)
 * add navbar for all views
 * generate .pdf (?how?) or other printable version

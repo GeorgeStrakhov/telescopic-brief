@@ -9,13 +9,9 @@
 
 <template name="app">
   {{>loading}}
-  {{#if currentUser}}
-    {{>navbarUser}}
-  {{else}}
-    {{>navbarNonUser}}
-  {{/if}}
   <div id="wrap">
-    <div class="container">
+    {{>navbar}}
+    <div class="container" id="everything">
       {{#if view "404"}}
         {{>page404}}
       {{/if}}
@@ -34,8 +30,8 @@
       {{#if view "enterPassword"}}
         {{>enterPassword}}
       {{/if}}
-      {{#if view "telescopic"}}
-        {{>briefTelescopic}}
+      {{#if view "brief"}}
+        {{>brief}}
       {{/if}}
       {{#if view "myApp"}}
         {{>myApp}}
@@ -80,15 +76,117 @@
   </li>
 </template>
 
+<template name="navbar">
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="#">Telescopic Brief
+          {{#if view 'welcome'}}
+            <span style="font-size: 0.8em"> - meaningful brief for everyone</span>
+          {{/if}}
+        </a>
+        <div class="nav-collapse collapse">
+          {{#if currentUser}}
+            {{>navbarUser}}
+          {{else}}
+            {{>navbarNonUser}}
+          {{/if}}
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+</template>
+
 <template name="navbarUser">
-  {{#if view "create"}}
-    create!
-  {{/if}}
+  <ul class="nav">
+    <li class="{{#if view 'myApp'}}active{{/if}}"><a href="#">my briefs</a></li>
+    <li class="{{#if view 'createNew'}}active{{/if}}"><a href="#/new">create new brief</a></li>
+    {{#if view "edit"}}
+      {{>navbarEditOptions}}}
+    {{/if}}
+    {{#if view "brief"}}
+      {{>navbarBriefOptions}}
+    {{/if}}
+  </ul>
+  <ul class="nav pull-right">
+    {{>navbarStatus}}
+    <li><a href="#" id="signOut">logout</a></li>
+  </ul>
 </template>
 
 <template name="navbarNonUser">
-  {{#if view "create"}}
-    nonuser create!
+  <ul class="nav">
+    <li class="{{#if view 'createNew'}}active{{/if}}"><a href="#/new">create new brief</a></li>
+    {{#if view "edit"}}
+      {{>navbarEditOptions}}}
+    {{/if}}
+    {{#if view "brief"}}
+      {{>navbarBriefOptions}}
+    {{/if}}
+  </ul>
+  <ul class="nav pull-right">
+    {{>navbarStatus}}
+    <li><a href="#" id="signIn">sign in</a></li>
+  </ul>
+<!--
+  sign in to get more options (if editing - meteor.call to make sure that after signing in this brief shows up as one of yours)
+-->
+</template>
+
+<template name="navbarBriefOptions">
+  <li class="dropdown"> <!-- switch view -->
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">switch view <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li><a href="#" id="telescopic" class="viewSwitch">telescopic{{#if briefView 'telescopic'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li><a href="#" id="table" class="viewSwitch">table{{#if briefView 'table'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li><a href="#" id="paragraph" class="viewSwitch">paragraph{{#if briefView 'paragraph'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li><a href="#" id="presentation" class="viewSwitch">presentation{{#if briefView 'presentation'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+    </ul>
+  </li>
+  <li class="dropdown"> <!-- options -->
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">options <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      {{#if isMyBrief}}
+        <li><a href="#/edit/{{brief._id}}/step1">edit this brief</a></li>
+      {{/if}}
+      <li><a href="#" id="downloadPdf">download as .pdf</a></li>
+      <li><a href="#" id="fork">fork this brief</a></li>
+    </ul>
+  </li>
+</template>
+
+<template name="navbarEditOptions">
+  <li><a href="#/brief/{{brief.name}}">finish editing</a></li>
+  <li class="dropdown"><!--options-->
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">options <b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      <li class="divider"></li>
+      <li class="nav-header">default view</li>
+      <li><a href="#" id="telescopic" class="defaultViewSwitch">telescopic{{#if defaultView 'telescopic'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li><a href="#" id="table" class="defaultViewSwitch">table{{#if defaultView 'table'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li><a href="#" id="paragraph" class="defaultViewSwitch">paragraph{{#if defaultView 'paragraph'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li><a href="#" id="presentation" class="defaultViewSwitch">presentation{{#if defaultView 'presentation'}}<span class="pull-right"><i class="icon-ok"></i></span>{{/if}}</a></li>
+      <li class="divider"></li>
+      <li class="nav-header">admin</li>
+      {{#if brief.passwordProtected}}
+        <li><a href="#" id="changePass">change password</a></li>
+        <li><a href="#" id="deletePass">delete password</a></li>
+      {{else}}
+        <li><a href="#" id="addPass">add password</a></li>
+      {{/if}}
+      <li><a href="#" id="delete">delete this brief</a></li>
+    </ul>
+  </li>
+</template>
+
+<template name="navbarStatus">
+  {{#if view 'edit'}}
+    <li><p class="navbar-text"><span class="navbar-text-smaller" id="saving">all changes saved</span></p></li>
   {{/if}}
 </template>
 
@@ -278,7 +376,7 @@
               <div>
                 <p>Other things that need to be considered:</p>
                 <div class="editable-list" id="additionalInfo">
-                  <ul>
+                  <ul> styleggllkhs
                     {{#each content.additionalInfo}}
                       <li>{{this}}</li>
                     {{/each}}
@@ -356,7 +454,7 @@
         <h5>Editing is simple:</h5>
           <ul>
             <li>everything that is underlined or surrounded by a dotted line can be edited</li>
-            <li>in order to start editing - click the undelined word or area. When you are done - hit 'tab' or just click somewhere else.</li>
+            <li>in order to start editing - click the undelined word or area. When you are done - hit 'tab' or just click somewhere else. If you want to cancel your changes - hit 'esc'.</li>
             <li>all changes are saved to the server automatically</li>
             <li>you don't have to fill in <strong>everything</strong>. Things that you leave blank (they show up as default values / hints inside curly braces) will not be shown in the final version of the brief.</li>
             <li>you can collaborate with your colleagues via sharing the secret link below with them. Please make sure that you don't concurrently work on the same sections of the brief though, otherwise your changes might conflict.</li>
@@ -443,12 +541,41 @@
   </div>
 </template>
 
+<template name="brief">
+  {{#if briefView "telescopic"}}
+    {{>briefTelescopic}}
+  {{/if}}
+  {{#if briefView "table"}}
+    {{>briefTable}}
+  {{/if}}
+  {{#if briefView "paragraph"}}
+    {{>briefParagraph}}
+  {{/if}}
+  {{#if briefView "presentation"}}
+    {{>briefPresentation}}
+  {{/if}}
+</template>
+
 <template name="briefTelescopic">
   <h2>{{content.briefDisplayName}}</h2>
   {{#if isMyBrief}}
     <p><a href="#/edit/{{brief._id}}/step1">edit this brief</a></p>
   {{/if}}
 </template>
+
+<template name="briefTable">
+  <h2>Table</h2>
+</template>
+
+<template name="briefParagraph">
+  <h2>Paragraph</h2>
+</template>
+
+<template name="briefPresentation">
+  <h2>Presentation</h2>
+</template>
+
+
 
 <template name="pdf">
   <div class="row centered">

@@ -22,6 +22,10 @@ html, body {
   background-color: #f5f5f5;
 }
 
+#everything {
+  padding-top: 60px;
+}
+
 .editable {
   border-bottom: 1px dotted black;
 }
@@ -46,6 +50,11 @@ html, body {
 
 .alignRight {
   text-align: right;
+}
+
+.navbar-text-smaller {
+  color: #f8f8f8;
+  font-size: 0.8em;
 }
 
 #innerContent {
@@ -113,6 +122,9 @@ html, body {
   padding: 7px 9px;
 }
 
-
+@media (max-width: 979px) {
+  #everything {
+    padding-top: 0;
+  }
 
 

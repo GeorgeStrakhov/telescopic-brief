@@ -44,7 +44,8 @@
 * mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
-* develop briefViews: table, telescopic, presentation
+* telescopic view: -> what if some fields are not there
+* develop briefViews: table, presentation
 * add briefs to my briefs if I am signed in and visit a brief (to readers or owners depneding)
 * implement signIn magic (preserve briefs, add to my briefs, what if I cancel,...)
 * add timing and deliverables section to the .pdf brief

@@ -563,20 +563,29 @@ Template.stepInstruction.events = {
   },
 };
 
-Template.briefTelescopic.events = {
-  'click #toggleCollaps' : function(e) {
-    e.preventDefault();
-    if($("#toggleCollaps").html() == "expand all") {
-      $("#toggleCollaps").html("collapse all");
-      $(".collapsTelescopic").show();
-      $(".collapsControl").removeClass('collapsControl-active');
+Template.briefTelescopic.rendered = function() {
+  //if the target of the collaps is "", then remove the link
+  $('.collapsControl').each(function() {
+    var idToShow = $(this).attr('collaps-toggle');
+    if($("#"+idToShow)) {
+      var inner = $("#"+idToShow).html();
+      if(inner) {
+        inner = inner.replace(/(\r\n|\n|\r)/gm,"");
+        inner = inner.replace(/ /g,"");
+      }
+      if(!inner || inner == "") {
+        $(this).removeClass('collapsControl-active');
+        $(this).attr('collaps-toggle', "");
+      }
     } else {
-      /*FIX! reload the whole thing??? otherwise second time it doesn't go correclty*/
-      $("#toggleCollaps").html("expand all");
-      $(".collapsTelescopic").hide();    
-      $(".collapsControl").addClass('collapsControl-active');     
+      console.log('not such element exists');
+      $(this).removeClass('collapsControl-active');
+      $(this).attr('collaps-toggle', "");
     }
-  },
+  });
+};
+
+Template.briefTelescopic.events = {
   'click .collapsControl' : function(e) {
     e.preventDefault();
     var idToShow = $(e.target).attr('collaps-toggle');

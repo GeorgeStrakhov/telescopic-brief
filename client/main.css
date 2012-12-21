@@ -26,6 +26,10 @@ html, body {
   padding-top: 60px;
 }
 
+hr {
+  border-bottom: 1px dotted black;
+}
+
 .editable {
   border-bottom: 1px dotted black;
 }
@@ -55,6 +59,52 @@ html, body {
 .navbar-text-smaller {
   color: #f8f8f8;
   font-size: 0.8em;
+}
+
+.briefTable {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.briefTable td {
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.third {
+  width: 30%;
+}
+
+.half {
+  width: 50%;
+}
+
+.third, .half {
+  vertical-align: top;
+}
+
+.rowTitle {
+  display:table-cell;
+  vertical-align:middle;
+  height: 130px;
+}
+
+.rowTitleText {
+  font-weight: bold;
+  text-align: center;
+  
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50% ;
+  -o-transform-origin: 50% 50% ;
+  transform-origin: 50% 50% ;
 }
 
 /*collaps telescopic stuff here */

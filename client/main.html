@@ -696,7 +696,179 @@
 </template>
 
 <template name="briefTable">
-  <h2>Table</h2>
+  {{#if isMyBrief}}
+  <div class="pull-right">
+    <p><a href="#/edit/{{brief._id}}/step1">edit this brief</a></p>
+  </div>
+  {{/if}}
+  <h2 class="span12 centered">{{content.briefDisplayName}}</h2>
+  <table class="briefTable">
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Background</div></td>
+        <td colspan="6">
+          {{#if btext.aboutBrand}}
+            <p>{{btext.aboutBrand}}</p>
+          {{/if}}
+          {{#if btext.aboutProduct}}
+            <p>{{btext.aboutProduct}}</p>
+          {{/if}}
+          {{#if btext.currentSituation}}
+            <p>{{btext.currentSituation}}</p>
+          {{/if}}
+          {{#if btext.businessObjectives}}
+            {{#if btext.businessGoal}}
+              <p>In order to {{btext.businessGoal}}, we need to:</p>
+              <ul>
+                {{#each btext.businessObjectives}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>    
+            {{else}}
+              <p>Our business objectives are:</p>
+              <ul>
+                {{#each btext.businessObjectives}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>
+            {{/if}}   
+          {{else}}
+            {{#if btext.businessGoal}}
+              <p>Our business goal is to {{btext.businessGoal}}.</p>
+            {{/if}}
+          {{/if}}        
+        </td>
+      </tr>
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Target Group</div></td>
+        <td colspan="6">
+          {{#if btext.targetDefinition}}
+            <p>{{btext.targetDefinition}}</p>
+          {{/if}}
+          {{#if btext.aboutTarget}}
+            <p>{{btext.aboutTarget}}</p>
+          {{/if}}
+          {{#if btext.targetChallenges}}
+            <p>Some of the challenges that they face in are:</p>
+            <ul>
+              {{#each btext.targetChallenges}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+          {{#if btext.targetDreams}}
+            <p>They dream of:</p>
+            <ul>
+              {{#each btext.targetDreams}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Key Challenge</div></td>
+        <td colspan="6" class="centered">
+          {{#if btext.keyChallenge}}
+            <h3>{{btext.keyChallenge}}</h3>
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Behavior Change</div></td>
+        <td colspan="2" class="third">
+          <p><strong>Current attitutude & behavior:</strong></p>
+          <p>
+            {{#if btext.currentAttitude}}
+              {{#if btext.currentBehavior}}
+                <span><em>"I {{btext.currentAttitude}} and that's why I {{btext.currentBehavior}} instead."</em></span>
+              {{else}}
+                <span><em>"I {{btext.currentAttitude}}."</em></span>
+              {{/if}}
+            {{else}}
+              {{#if btext.currentBehavior}}
+                <span><em>"I {{btext.currentBehavior}}."</em></span>  
+              {{/if}}
+            {{/if}}
+          </p>
+        </td>
+        <td colspan="2" class="third">
+          <p><strong>Desired attitude & behavior:</strong></p>
+          <p>
+            {{#if btext.targetAttitude}}
+              {{#if btext.targetBehavior}}
+                <span><em>"I {{btext.targetAttitude}} and {{btext.targetBehavior}}."</em></span>
+              {{else}}
+                <span><em>"I {{btext.targetAttitude}}."</em></span>
+              {{/if}}
+            {{else}}
+              {{#if btext.targetBehavior}}
+                <span><em>"I {{btext.targetBehavior}}."</em></span>  
+              {{/if}}
+            {{/if}}          
+          </p>
+        </td>
+        <td colspan="2" class="third">
+          <p><strong>What could drive attitude & behavior change:</strong></p>
+          <p>
+            {{#if btext.targetBehaviorConditions}}
+              <ul>
+                {{#each btext.targetBehaviorConditions}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>
+            {{/if}}
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Success Definition</div></td>
+        <td colspan="6">
+          {{#if btext.KPIs}}
+            <ul>
+              {{#each btext.KPIs}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Additional Information</div></td>
+        <td colspan="6">
+          {{#if btext.additionalInfo}}
+            <ul>
+              {{#each btext.additionalInfo}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          {{/if}}
+        </td>
+      </tr>
+      <tr>
+        <td class="rowTitle" valign="middle"><div class="rowTitleText">Timing & Deliverables</div></td>
+        <td colspan="3" class="half">
+          <p><strong>Timing:</strong></p>
+            {{#if btext.timing}}
+              <ul>
+                {{#each btext.timing}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>
+            {{/if}}
+        </td>
+        <td colspan="3" class="half">
+          <p><strong>Deliverables:</strong></p>
+            {{#if btext.mandatoryDeliverables}}
+              <ul>
+                {{#each btext.mandatoryDeliverables}}
+                  <li>{{this}}</li>
+                {{/each}}
+              </ul>
+            {{/if}}
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <template name="briefParagraph">
@@ -706,6 +878,7 @@
   </div>
   {{/if}}
   <h2>{{content.briefDisplayName}}</h2>
+  <hr />
   <!-- background -->
   <h3>Background</h3>
   {{#if btext.aboutBrand}}

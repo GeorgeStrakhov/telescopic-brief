@@ -660,7 +660,6 @@ Template.briefTelescopic.events = {
 
 Template.slides.rendered = function() {
   $.deck('.slide');
-  $.deck('enableScale');
   if(Session.get('briefView') == "presentationFull") {
     var i = "<p>You are now in experimental presenter's mode!</p>"
     i+= "<ul>";

@@ -57,6 +57,9 @@ function loadBrief(loadBy, name, id, pass, goWhere, briefView) {
           if(result == "password required") {
             Session.set('currentBriefName', name);
             Session.set('currentBriefId', id);
+            if(briefView) {
+              Session.set('nextBriefView', briefView);
+            }
             Session.set('view', 'enterPassword');
           } else {
             //console.log(result);
@@ -115,9 +118,8 @@ function markdownFromArray(data) { //generates markdown (not really markdown, ju
         md += "* "+data[i]+"\r\n";
       }
       md+= "* "+data[data.length-1];
-    } else {
-      md += "(type here, each new line will become a new item)";
     }
+    //console.log(md);
     return md;
 }
 
@@ -125,6 +127,14 @@ function markdownFromArray(data) { //generates markdown (not really markdown, ju
 Meteor.subscribe("briefs");
 
 ////////////REACTIVE AUTOSUBSCRIBE HELPERS//////////
+Meteor.autosubscribe(function() {
+  Meteor.subscribe("briefView", Session.get("briefView"));
+  if(Session.get("briefView") == "presentationFull") {
+    $("body").addClass("deck-container");
+  } else {
+    $("body").removeClass("deck-container");
+  }
+});
 
 ///////////SITE-WIDE HANDLEBARS HELPERS//////////
 Handlebars.registerHelper('siteUrl', function() {
@@ -175,9 +185,17 @@ Handlebars.registerHelper('btext', function() { //constructing the sentences of 
   //currentSituation
   if(!(btext.currentSituation && btext.currentSituation != ""))
     btext.currentSituation = false;
+  //somethingInTheBackground
+  btext.somethingInTheBackground = false;
+  if (btext.aboutBrand || btext.aboutProduct || btext.currentSituation)
+    btext.somethingInTheBackground = true;
+  //somethingInObjectives
+  btext.somethingInObjectives = false;
+  if (btext.businessGoal || btext.businessObjectives)
+    btext.somethingInObjectives = true;
   //targetDefinition
   if(btext.targetGroup && btext.targetGroup != "")
-    btext.targetDefinition = "Our key target group is "+btext.targetGroup+".";
+    btext.targetDefinition = "We are trying to reach "+btext.targetGroup+".";
   //aboutTarget
   btext.aboutTarget = "";
   if(btext.targetSex && btext.targetSex != "")
@@ -202,6 +220,14 @@ Handlebars.registerHelper('btext', function() { //constructing the sentences of 
   } else {
     btext.whyTheyDont = false;
   }  
+  //somethingInTargetGroup
+  btext.somethingInTargetGroup = false;
+  if(btext.aboutTarget || btext.targetCurrentLife || btext.targetChallenges || btext.targetDreams)
+    btext.somethingInTargetGroup = true;
+  //somethingInBehaviorChange
+  btext.somethingInBehaviorChange = false;
+  if(btext.theyDoInstead || btext.whyTheyDont || btext.targetBehaviorConditions)
+    btext.somethingInBehaviorChange = true;
   
   return btext;
 });
@@ -296,6 +322,7 @@ Template.navbarBriefOptions.events = {
     var newView = e.target.id;
     //console.log(newView)
     if(!(newView == Session.get('briefView'))) {
+      //Router.navigate("#/brief/"+Session.get('brief').name+"/view/"+newView, false);
       Session.set('briefView', newView);
       history.pushState(null, null, Meteor.absoluteUrl()+"#/brief/"+Session.get('brief').name+"/view/"+newView);
     }
@@ -424,8 +451,9 @@ Template.enterPassword.events = {
       notify('error', 'password can\'t be blank');
       return;
     }
+    Session.set('briefPass', pass);
     if(name) {
-      loadBrief("name", name, null, pass, goWhere);
+      loadBrief("name", name, null, pass, goWhere, Session.get('nextBriefView'));
     } else if(id) {
       loadBrief("id", null, id, pass, goWhere); 
     } else {
@@ -451,7 +479,10 @@ Template.singleBriefLi.events = {
 Template.edit.rendered = function() {
   //console.log('rendered!');
   $('.editable').editable(function(value, settings){
-    saveEditChanges(this.id, value);
+    if (value.charAt(0) != "{") { //checking that we are not simply blurring from the default value
+      saveEditChanges(this.id, value);
+      //console.log('saving changes');
+    }
     //console.log(value);
     //console.log(settings);
     return value;
@@ -459,13 +490,14 @@ Template.edit.rendered = function() {
     style: 'inherit',
     event: 'click',
     onblur: 'submit',
-    tooltip: 'click to edit...'
+    tooltip: 'click to edit...',
   });
   //areas
   $('.editable-area').editable(function(value, settings){
-    saveEditChanges(this.id, value);
-    //console.log(value);
-    //console.log(settings);
+    if (value.charAt(0) != "{") { //checking that we are not simply blurring from the default value
+      saveEditChanges(this.id, value);
+      //console.log('saving changes');
+    }
     return value;
   }, {//options
     type: 'autogrow',
@@ -498,7 +530,12 @@ Template.edit.rendered = function() {
     style: 'inherit',
     data: function(value, settings) {
       //console.log($(this).attr("id"));
-      return markdownFromArray(Session.get('brief').content[$(this).attr("id")]);
+      var md = markdownFromArray(Session.get('brief').content[$(this).attr("id")]);
+      if (md && md!="") {
+        return md;
+      } else {
+        return "";
+      }
     },
     event: 'click',
     onblur: 'submit',
@@ -507,6 +544,22 @@ Template.edit.rendered = function() {
 }
 
 Template.edit.events = {
+  'click .editable' : function(e) {
+    //console.log($(e.target).children().children());
+    var inputEl = $(e.target).children().children();
+    if($(inputEl)) {
+      $(inputEl).select();
+      if($(inputEl).width() < 150) {
+        $(inputEl).width('150px');
+      }
+    }
+  },
+  'click .editable, click .editable-area' : function(e) {
+    var inputEl = $(e.target).children().children();
+    if(inputEl.val() && inputEl.val().charAt(0) == "{") {
+      inputEl.val("");
+    }
+  },
   'click .accordion-toggle': function(e) {
     e.preventDefault();
     var which = e.target.id;
@@ -605,6 +658,38 @@ Template.briefTelescopic.events = {
   },
 };
 
+Template.slides.rendered = function() {
+  $.deck('.slide');
+  $.deck('enableScale');
+  if(Session.get('briefView') == "presentationFull") {
+    var i = "<p>You are now in experimental presenter's mode!</p>"
+    i+= "<ul>";
+    i+= "<li>Press <strong>ESC</strong> to go back to normal view</li>";
+    i+= "<li>Press <strong>F11</strong> to go full screen</li>";
+    i+= "<li>Press <strong>CTRL+ / CTRL-</strong> to change font size</li>";    
+    i+= "<li>Press <strong>M</strong> to see all slides on one screen</li>";
+    i+= "<li>Press <strong>F5</strong> if something goes wrong</li>";
+    i+= "</ul>";
+    i+= "<p>Good Luck Presenting!</p>"
+    notify('success', i);
+    $('body').keyup(function (e) {
+      e.preventDefault();
+      if(e.which ==27) {
+        Session.set('briefView', 'presentation');
+        history.pushState(null, null, Meteor.absoluteUrl()+"#/brief/"+Session.get('brief').name+"/view/presentation");
+      }
+    });
+  }
+};
+
+Template.briefPresentation.events = {
+  'click #goFullScreen' : function(e) {
+    e.preventDefault();
+    Session.set('briefView', 'presentationFull');
+    history.pushState(null, null, Meteor.absoluteUrl()+"#/brief/"+Session.get('brief').name+"/view/presentationFull");
+  }
+};
+
 //////////ROUTER///////////
 var myRouter = Backbone.Router.extend({
   routes: {
@@ -638,13 +723,11 @@ var myRouter = Backbone.Router.extend({
   brief: function(name, view) {
     if(view) {
       view = view.toString();
-      var validViews = ['telescopic', 'table', 'paragraph', 'presentation'];
+      var validViews = ['telescopic', 'table', 'paragraph', 'presentation', 'presentationFull'];
       if($.inArray(view, validViews) == -1) {
         view = 'telescopic';
         history.replaceState(null, null, "#/brief/"+name+"/view/telescopic");
       }
-    } else {
-      history.replaceState(null, null, "#/brief/"+name+"/view/telescopic");
     }
     //console.log(view);
     Session.set('goWhere', 'brief');

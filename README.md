@@ -44,11 +44,17 @@
 * mandatoryDeliverables: [] //array of mandatory delivrables like TVC, OOH...
 
 ##TODO
-* develop briefViews: table, presentation
+* bugfix: type password only once for one brief (independent of the view) during one session
+* bugfix: history.pushState + backbutton not working
+
+  window.addEventListener("popstate", function(e) {
+    //swapPhoto(location.pathname);
+  }
+
 * add briefs to my briefs if I am signed in and visit a brief (to readers or owners depneding)
 * implement signIn magic (preserve briefs, add to my briefs, what if I cancel,...)
 * add timing and deliverables section to the .pdf brief
 * redesign myBriefs view
 * add first time instruction video? (shown only once)
-* generate .pdf (?how?) or other printable version
+* generate .pdf http://stackoverflow.com/questions/11691513/it-possible-use-a-nodejs-package-inside-meteor-app + (http://pdfkit.org/ || https://github.com/Marak/pdf.js/)
 * google analytics && / || gauges

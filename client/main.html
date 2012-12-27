@@ -4,7 +4,15 @@
 </head>
 
 <body>
-  {{> app}}
+  {{#if view "brief"}}
+    {{#if briefView "presentationFull"}}
+      {{>briefPresentationFull}}
+    {{else}}
+      {{>app}}
+    {{/if}}
+  {{else}}
+    {{> app}}
+  {{/if}}
 </body>
 
 <template name="app">
@@ -121,7 +129,9 @@
 
 <template name="navbarNonUser">
   <ul class="nav">
-    <li class="{{#if view 'createNew'}}active{{/if}}"><a href="#/new">create new brief</a></li>
+    {{#unless view 'welcome'}}
+      <li class="{{#if view 'createNew'}}active{{/if}}"><a href="#/new">create new brief</a></li>
+    {{/unless}}
     {{#if view "edit"}}
       {{>navbarEditOptions}}}
     {{/if}}
@@ -1013,8 +1023,259 @@
   <hr />
 </template>
 
+<template name="briefPresentationFull">
+  {{>slides}}
+</template>
+
 <template name="briefPresentation">
-  <h2>Presentation</h2>
+  <div class="well innerDeckContainer deck-container">
+    {{>slides}}
+  </div>
+  <div class="container centered" style="margin-top: 15px;">
+    <p><a href="#" id="goFullScreen">switch to presenter view</a></p>
+  </div>
+</template>
+
+<template name="slides">
+  <!-- Begin slides -->
+
+  <section class="slide">
+	  <h1>{{btext.briefDisplayName}}</h1>
+  </section>
+
+  <section class="slide">
+    <h2 class="centered">Agenda</h2>
+    <ol>
+      {{#if btext.somethingInTheBackground}}
+        <li>
+          <h3>Background</h3>
+        </li>
+      {{/if}}
+      {{#if btext.somethingInObjectives}}
+        <li>
+          <h3>Objectives</h3>
+        </li>
+      {{/if}}
+      {{#if btext.somethingInTargetGroup}}
+        <li>
+          <h3>Target Group</h3>
+        </li>
+      {{/if}}
+      {{#if btext.keyChallenge}}
+        <li>
+          <h3>Key Challenge</h3>
+        </li>
+      {{/if}}
+      {{#if btext.somethingInBehaviorChange}}
+        <li>
+          <h3>Behavior Change</h3>
+        </li>
+      {{/if}}
+      {{#if btext.KPIs}}
+        <li>
+          <h3>Success Definition</h3>
+        </li>
+      {{/if}}
+      {{#if btext.additionalInfo}}
+        <li>
+          <h3>Additional Information</h3>
+        </li>
+      {{/if}}
+      {{#if btext.timing}}
+        <li>
+          <h3>Timing</h3>
+        </li>
+      {{/if}}
+      {{#if btext.mandatoryDeliverables}}
+        <li>
+          <h3>Deliverables</h3>
+        </li>
+      {{/if}}
+    </ol>
+  </section>
+  
+  {{#if btext.somethingInTheBackground}}
+    <section class="slide">
+      <h2 class="centered">Background</h2>
+      <ul>
+        {{#if btext.aboutBrand}}<li class="slide">{{btext.aboutBrand}}</li>{{/if}}
+        {{#if btext.aboutProduct}}<li class="slide">{{btext.aboutProduct}}</li>{{/if}}
+        {{#if btext.currentSituation}}<li class="slide">{{btext.currentSituation}}</li>{{/if}}
+      </ul>
+    </section>
+  {{/if}}
+  
+  {{#if btext.somethingInObjectives}}
+    <section class="slide">
+      <h2 class="centered">Objectives</h2>
+      {{#if btext.businessObjectives}}
+        {{#if btext.businessGoal}}
+          <p>In order to {{btext.businessGoal}}, we need to:</p>
+          <ul>
+            {{#each btext.businessObjectives}}
+              <li class="slide">{{this}}</li>
+            {{/each}}
+          </ul>    
+        {{else}}
+          <p>Our business objectives are:</p>
+          <ul>
+            {{#each btext.businessObjectives}}
+              <li class="slide">{{this}}</li>
+            {{/each}}
+          </ul>
+        {{/if}}   
+      {{else}}
+        {{#if btext.businessGoal}}
+          <p>Our business goal is to {{btext.businessGoal}}.</p>
+        {{/if}}
+      {{/if}}
+    </section>
+  {{/if}}
+
+  {{#if btext.somethingInTargetGroup}}
+    <section class="slide">
+      <h2 class="centered">Target Group</h2>
+        {{#if btext.targetDefinition}}
+          <p>{{btext.targetDefinition}}</p>
+        {{/if}}
+        {{#if btext.aboutTarget}}
+          <p>{{btext.aboutTarget}}</p>
+        {{/if}}
+        {{#if btext.targetChallenges}}
+          <p class="slide"><strong>Some of the challenges that they face in are:</strong></p>
+          <ul>
+            {{#each btext.targetChallenges}}
+              <li class="slide">{{this}}</li>
+            {{/each}}
+          </ul>
+        {{/if}}
+        {{#if btext.targetDreams}}
+          <p class="slide"><strong>They dream of:</strong></p>
+          <ul>
+            {{#each btext.targetDreams}}
+              <li class="slide">{{this}}</li>
+            {{/each}}
+          </ul>
+        {{/if}}
+    </section>
+  {{/if}}
+  
+  {{#if btext.keyChallenge}}
+    <section class="slide">
+      <h1>{{btext.keyChallenge}}</h1>
+    </section>
+  {{/if}}
+  
+  {{#if btext.somethingInBehaviorChange}}
+    <section class="slide">
+      <h2 class="centered">Behavior Change</h2>
+      <table class="centered" style="width: 100%;">
+        <tr>
+          <td style="width: 50%;"><strong>From:</strong></td>
+          <td style="width: 50%;"><strong>To:</strong></td>
+        </tr>
+        {{#if btext.currentAttitude}}
+          {{#if btext.targetAttitude}}
+            <tr>
+              <td style="width: 50%;">
+                <p class="slide" style="margin: 20px;"><em>"I {{btext.currentAttitude}}"</em></p>
+              </td>
+              <td style="width: 50%;">
+                <p class="slide" style="margin: 20px;"><em>"I {{btext.targetAttitude}}"</em></p>
+              </td>
+            </tr>
+          {{/if}}
+        {{/if}}
+        {{#if btext.currentBehavior}}
+          {{#if btext.targetBehavior}}
+            <tr>
+              <td style="width: 50%;">
+                <p class="slide" style="margin: 20px;"><em>"I {{btext.currentBehavior}}"</em></p>
+              </td>
+              <td style="width: 50%;">
+                <p class="slide" style="margin: 20px;"><em>"I {{btext.targetBehavior}}"</em></p>
+              </td>
+            </tr>
+          {{/if}}
+        {{/if}}
+      </table>
+    </section>
+  {{/if}}
+
+  {{#if btext.targetBehaviorConditions}}
+    <section class="slide">
+      <h2 class="centered">What can change behavior:</h2>
+      <ul>
+        {{#each btext.targetBehaviorConditions}}
+          <li class="slide">{{this}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/if}}
+
+  {{#if btext.KPIs}}
+    <section class="slide">
+      <h2 class="centered">Success Definition:</h2>
+      <p>We'll know that we have made it if:</p>
+      <ul>
+        {{#each btext.KPIs}}
+          <li class="slide">{{this}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/if}}
+
+  {{#if btext.additionalInfo}}
+    <section class="slide">
+      <h2 class="centered">Other things you need to know:</h2>
+      <ul>
+        {{#each btext.additionalInfo}}
+          <li class="slide">{{this}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/if}}
+
+  {{#if btext.timing}}
+    <section class="slide">
+      <h2 class="centered">Timing:</h2>
+      <ul>
+        {{#each btext.timing}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/if}}
+
+  {{#if btext.mandatoryDeliverables}}
+    <section class="slide">
+      <h2 class="centered">Deliverables:</h2>
+      <ul>
+        {{#each btext.mandatoryDeliverables}}
+          <li>{{this}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/if}}
+  
+  <section class="slide">
+	  <h1>Thank you!</h1>
+	  <h2 class="centered">You can view or fork this brief from here:</h2>
+	  <p class="centered">{{siteUrl}}#/brief/{{brief.name}}</p>
+  </section>
+
+  <!-- End slides. -->
+
+  <!-- deck.navigation snippet -->
+  <a href="#" class="deck-prev-link" title="Previous">&#8592;</a>
+  <a href="#" class="deck-next-link" title="Next">&#8594;</a>
+
+  <!-- deck.status snippet -->
+  <p class="deck-status">
+	  <span class="deck-status-current"></span>
+	  /
+	  <span class="deck-status-total"></span>
+  </p>
 </template>
 
 
